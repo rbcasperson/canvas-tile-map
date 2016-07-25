@@ -1,0 +1,13 @@
+.container {
+    width: 100%;
+    text-align: center;
+}
+
+canvas {
+    display: inline;
+    border: 2px solid black;
+}
+
+header {
+    text-align: center;
+}
