@@ -41,27 +41,24 @@ export class Map {
                 });
             });
         });
-        console.log(this.images[0][0]);
     }
 
-    drawLayer(layer): void {
-
-    }
-
-    draw(context = this.context): void {
-        _.each(_.range(this.layers.length), layer => {
-            _.each(_.range(this.height), row => {
-                _.each(_.range(this.width), col => {
-                    let img = this.images[layer][`${row} ${col}`];
-                    let x = col * this.tileHeight;
-                    let y = row * this.tileWidth;
-                    console.log(img);
-                    img.onload = function() {
-                        context.drawImage(img, x, y, this.tileHeight, this.tileWidth);
-                    }.bind(this);
-                })
+    drawLayer(layer, context = this.context): void {
+        _.each(_.range(this.height), row => {
+            _.each(_.range(this.width), col => {
+                let img = this.images[layer][`${row} ${col}`];
+                let x = col * this.tileHeight;
+                let y = row * this.tileWidth;
+                img.onload = function() {
+                    context.drawImage(img, x, y, this.tileHeight, this.tileWidth);
+                }.bind(this);
             })
         })
     }
 
+    draw(context = this.context): void {
+        _.each(_.range(this.layers.length), layer => {
+            this.drawLayer(layer);
+        });
+    }
 }
