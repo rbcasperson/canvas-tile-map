@@ -1,6 +1,6 @@
 import { Map } from '../map';
 
-var tiles = [
+var layers = [[
     [1, 1, 1, 1, 1, 2, 2, 1, 1, 1],
     [1, 3, 1, 1, 1, 2, 2, 2, 2, 1],
     [1, 3, 3, 1, 1, 1, 1, 1, 2, 1],
@@ -11,7 +11,7 @@ var tiles = [
     [1, 1, 1, 2, 2, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 2, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 2, 1, 1, 1, 1, 1]
-];
+]];
 
 var tileSize = 50; //pixels
 var canvasID: string = 'basic-map';
@@ -21,6 +21,6 @@ var imageSources = {
     3: './static/images/sand.jpg'
 };
 
-let map = new Map(canvasID, imageSources, tiles, tileSize);
+let map = new Map(canvasID, imageSources, layers, tileSize);
 map.draw();
 
