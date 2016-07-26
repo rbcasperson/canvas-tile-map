@@ -2,13 +2,15 @@ declare var require: any;
 let _ = require('lodash');
 
 export class Map {
+    // `layers` are ordered with bottom-most layer first
     layers: number[][][];
     height: number;
     width: number;
     images: {[key: number]: HTMLImageElement}[];
-    imageSources: {
-        [key: number]: string
-    };
+    // `imageSources` are a list of sources (src) to put inside <img> elements
+    // when creating a layer of tiles, each tile should reference the index of 
+    // its corresponding source in the imageSources list.
+    imageSources: string[]
     tileWidth: number;
     tileHeight: number;
     canvas: any;
@@ -33,9 +35,9 @@ export class Map {
         _.each(_.range(this.layers.length), layer => {
             _.each(_.range(this.height), row => {
                 _.each(_.range(this.width), col => {
-                    let key: number = this.layers[layer][row][col];
+                    let index: number = this.layers[layer][row][col];
                     let img = new Image();
-                    img.src = this.imageSources[key];
+                    img.src = this.imageSources[index];
                     this.images.push({});
                     this.images[layer][`${row} ${col}`] = img;
                 });
@@ -47,11 +49,13 @@ export class Map {
         _.each(_.range(this.height), row => {
             _.each(_.range(this.width), col => {
                 let img = this.images[layer][`${row} ${col}`];
-                let x = col * this.tileHeight;
-                let y = row * this.tileWidth;
-                img.onload = function() {
-                    context.drawImage(img, x, y, this.tileHeight, this.tileWidth);
-                }.bind(this);
+                if (img.src) {
+                    let x = col * this.tileHeight;
+                    let y = row * this.tileWidth;
+                    img.onload = function() {
+                        context.drawImage(img, x, y, this.tileHeight, this.tileWidth);
+                    }.bind(this);
+                };
             })
         })
     }

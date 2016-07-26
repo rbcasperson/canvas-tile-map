@@ -9,6 +9,7 @@
     },
     "files": [
         "./src/examples/basic-map.ts",
+        "./src/examples/layered-map.ts",
         "./src/examples/large-map.ts"
     ]
 }
