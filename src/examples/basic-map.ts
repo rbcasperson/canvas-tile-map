@@ -18,7 +18,7 @@ var layers = [
 var tileSize = 50; //pixels
 var canvasID: string = 'basic-map';
 var imageSources = [
-    '', // 0
+    null, // 0
     './static/images/grass.jpg', // 1
     './static/images/stone-path.jpg', // 2
     './static/images/sand.jpg'// 3

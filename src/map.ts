@@ -35,11 +35,15 @@ export class Map {
         _.each(_.range(this.layers.length), layer => {
             _.each(_.range(this.height), row => {
                 _.each(_.range(this.width), col => {
-                    let index: number = this.layers[layer][row][col];
-                    let img = new Image();
-                    img.src = this.imageSources[index];
                     this.images.push({});
-                    this.images[layer][`${row} ${col}`] = img;
+                    let index: number = this.layers[layer][row][col];
+                    if (index !== 0) {
+                        let img = new Image();
+                        img.src = this.imageSources[index];
+                        this.images[layer][`${row} ${col}`] = img;
+                    } else {
+                        this.images[layer][`${row} ${col}`] = null;
+                    }
                 });
             });
         });
@@ -49,7 +53,7 @@ export class Map {
         _.each(_.range(this.height), row => {
             _.each(_.range(this.width), col => {
                 let img = this.images[layer][`${row} ${col}`];
-                if (img.src) {
+                if (img) {
                     let x = col * this.tileHeight;
                     let y = row * this.tileWidth;
                     img.onload = function() {
