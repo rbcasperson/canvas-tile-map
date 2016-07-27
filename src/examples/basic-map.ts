@@ -15,7 +15,8 @@ var layers = [
     ]
 ];
 
-var tileSize = 50; //pixels
+var tileHeight = 50; //pixels
+var tileWidth = 50; //pixels
 var canvasID: string = 'basic-map';
 var imageSources = [
     null, // 0
@@ -24,6 +25,6 @@ var imageSources = [
     './static/images/sand.jpg'// 3
 ];
 
-let map = new Map(canvasID, imageSources, layers, tileSize);
+let map = new Map(canvasID, imageSources, layers, tileHeight, tileWidth);
 map.draw();
 

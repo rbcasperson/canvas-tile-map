@@ -28,7 +28,8 @@ var layers = [
 
 ];
 
-var tileSize = 50; //pixels
+var tileHeight = 50; //pixels
+var tileWidth = 50; //pixels
 var canvasID: string = 'layered-map';
 var imageSources = [
     null, // 0
@@ -38,6 +39,6 @@ var imageSources = [
     './static/images/bush.png' // 4
 ];
 
-let map = new Map(canvasID, imageSources, layers, tileSize);
+let map = new Map(canvasID, imageSources, layers, tileHeight, tileWidth);
 map.draw();
 
