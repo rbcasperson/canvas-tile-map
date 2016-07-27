@@ -1,5 +1,6 @@
 declare var require: any;
 let _ = require('lodash');
+import { Camera } from './camera';
 
 export class Map {
     // `layers` are ordered with bottom-most layer first
@@ -49,13 +50,13 @@ export class Map {
         });
     }
 
-    drawLayer(layer, context = this.context): void {
+    drawLayer(layer, context = this.context, offsetX: number = 0, offsetY: number = 0): void {
         _.each(_.range(this.height), row => {
             _.each(_.range(this.width), col => {
                 let img = this.images[layer][`${row} ${col}`];
                 if (img) {
-                    let x = col * this.tileHeight;
-                    let y = row * this.tileWidth;
+                    let x = (col * this.tileHeight) + offsetX;
+                    let y = (row * this.tileWidth) + offsetY;
                     img.onload = function() {
                         context.drawImage(img, x, y, this.tileHeight, this.tileWidth);
                     }.bind(this);
