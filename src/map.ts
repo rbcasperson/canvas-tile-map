@@ -16,12 +16,12 @@ export class Map {
     canvas: any;
     context: any
 
-    constructor(canvasID: string, imageSources, layers, tileHeight, tileWdith = tileHeight) {
+    constructor(canvasID: string, imageSources, layers, tileHeight, tileWidth = tileHeight) {
         this.layers = layers;
         this.height = layers[0].length;
         this.width = layers[0][0].length;
         this.tileHeight = tileHeight;
-        this.tileWidth = tileWdith;
+        this.tileWidth = tileWidth;
         this.canvas = document.getElementById(canvasID);
         this.canvas.height = this.height * this.tileHeight;
         this.canvas.width = this.width * this.tileWidth;
