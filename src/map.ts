@@ -20,7 +20,7 @@ export class Map {
     canvas: any;
     context: any
 
-    constructor(canvasID: string, imageSources: string[], layers: number[][][], tileHeight: number, tileWidth: number, camera?: Camera) {
+    constructor(canvasID: string, imageSources: string[], layers: number[][][], tileHeight: number, tileWidth: number, cameraHeight?: number, cameraWidth?: number) {
         this.layers = layers;
         this.colCount = layers[0].length;
         this.rowCount = layers[0][0].length;
@@ -28,10 +28,10 @@ export class Map {
         this.tileWidth = tileWidth;
         this.height = this.colCount * this.tileHeight;
         this.width = this.rowCount * this.tileWidth;
-        if (camera) {
-            this.camera = camera;
+        if (cameraHeight && cameraWidth) {
+            this.camera = new Camera(this, cameraHeight, cameraWidth);
         } else {
-            this.camera = new Camera(this.height, this.width); 
+            this.camera = new Camera(this, this.height, this.width); 
         }
         this.canvas = document.getElementById(canvasID);
         this.canvas.height = this.camera.height;

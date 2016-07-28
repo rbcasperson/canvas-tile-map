@@ -39,8 +39,15 @@ var imageSources = [
     './static/images/sand.jpg', // 3
     './static/images/bush.png' // 4
 ];
-var camera = new Camera(300, 300);
+let cameraHeight = 300 //pixels
+let cameraWidth = 300 //pixels
 
-let map = new Map(canvasID, imageSources, layers, tileHeight, tileWidth, camera);
+let settings = {
+    cameraHeight: 300,
+    cameraWidth: 300,
+    // etc.
+}
+
+let map = new Map(canvasID, imageSources, layers, tileHeight, tileWidth, cameraHeight, cameraWidth);
 map.draw();
 
