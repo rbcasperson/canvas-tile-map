@@ -2,6 +2,11 @@ declare var require: any;
 let _ = require('lodash');
 import { Map } from './map';
 
+export interface CameraSettings {
+	width: number;
+	height: number;
+}
+
 export class Camera {
 	// all numbers are in pixels
 	x: number;
@@ -11,9 +16,9 @@ export class Camera {
 	width: number;
 	height: number;
 
-	constructor(map: Map, width: number, height: number) {
-		this.width = width;
-		this.height = height;
+	constructor(map: Map, settings: CameraSettings) {
+		this.width = settings.width;
+		this.height = settings.height;
 		this.x = 0;
 		this.y = 0;
 		this.maxX = map.width - this.width;

@@ -1,5 +1,4 @@
-import { Map } from '../map';
-import { Camera } from '../camera';
+import { Game } from '../game';
 
 var layers = [
     [ // base layer
@@ -29,25 +28,25 @@ var layers = [
 
 ];
 
-var tileHeight = 50; //pixels
-var tileWidth = 50; //pixels
-var canvasID: string = 'large-map';
-var imageSources = [
-    null, // 0
-    './static/images/grass.jpg', // 1
-    './static/images/stone-path.jpg', // 2
-    './static/images/sand.jpg', // 3
-    './static/images/bush.png' // 4
-];
-let cameraHeight = 300 //pixels
-let cameraWidth = 300 //pixels
-
-let settings = {
-    cameraHeight: 300,
-    cameraWidth: 300,
-    // etc.
+var settings = {
+    canvasID: 'large-map',
+    map: {
+        layers: layers,
+        tileHeight: 50,
+        tileWidth: 50,
+        imageSources: [
+            null, // 0
+            './static/images/grass.jpg', // 1
+            './static/images/stone-path.jpg', // 2
+            './static/images/sand.jpg', // 3
+            './static/images/bush.png' // 4
+        ]
+    },
+    camera: {
+        height: 300,
+        width: 300
+    }
 }
 
-let map = new Map(canvasID, imageSources, layers, tileHeight, tileWidth, cameraHeight, cameraWidth);
-map.draw();
-
+let game = new Game(settings);
+game.draw();

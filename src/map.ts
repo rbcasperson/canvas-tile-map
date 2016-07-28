@@ -2,6 +2,13 @@ declare var require: any;
 let _ = require('lodash');
 import { Camera } from './camera';
 
+export interface MapSettings {
+    layers: number[][][];
+    tileHeight: number;
+    tileWidth: number;
+    imageSources: string[];
+}
+
 export class Map {
     // `layers` are ordered with bottom-most layer first
     layers: number[][][];
@@ -16,52 +23,27 @@ export class Map {
     imageSources: string[]
     tileWidth: number;
     tileHeight: number;
-    camera: Camera;
-    canvas: any;
-    context: any
 
-    constructor(canvasID: string, imageSources: string[], layers: number[][][], tileHeight: number, tileWidth: number, cameraHeight?: number, cameraWidth?: number) {
-        this.layers = layers;
-        this.colCount = layers[0].length;
-        this.rowCount = layers[0][0].length;
-        this.tileHeight = tileHeight;
-        this.tileWidth = tileWidth;
+    constructor(settings: MapSettings) {
+        this.layers = settings.layers;
+        this.colCount = settings.layers[0].length;
+        this.rowCount = settings.layers[0][0].length;
+        this.tileHeight = settings.tileHeight;
+        this.tileWidth = settings.tileWidth;
         this.height = this.colCount * this.tileHeight;
         this.width = this.rowCount * this.tileWidth;
-        if (cameraHeight && cameraWidth) {
-            this.camera = new Camera(this, cameraHeight, cameraWidth);
-        } else {
-            this.camera = new Camera(this, this.height, this.width); 
-        }
-        this.canvas = document.getElementById(canvasID);
-        this.canvas.height = this.camera.height;
-        this.canvas.width = this.camera.height;
-        this.context = this.canvas.getContext('2d');
-        this.imageSources = imageSources;
+        this.imageSources = settings.imageSources;
         this.images = [];
         this.setImages();
     }
 
-    get tilesInView() {
-        var startCol = Math.floor(this.camera.x / this.tileWidth);
-        var endCol = startCol + (this.camera.width / this.tileWidth);
-        var startRow = Math.floor(this.camera.y / this.tileHeight);
-        var endRow = startRow + (this.camera.height / this.tileHeight);
-        return {
-            startCol: startCol, 
-            endCol: endCol, 
-            startRow: startRow, 
-            endRow: endRow
-        };
-    }
-
     setImages(): void {
         _.each(_.range(this.layers.length), layer => {
+            this.images.push({});
             _.each(_.range(this.colCount), row => {
                 _.each(_.range(this.rowCount), col => {
-                    this.images.push({});
                     let index: number = this.layers[layer][row][col];
-                    if (index !== 0) {
+                    if (this.imageSources[index]) {
                         let img = new Image();
                         img.src = this.imageSources[index];
                         this.images[layer][`${row} ${col}`] = img;
@@ -70,29 +52,6 @@ export class Map {
                     }
                 });
             });
-        });
-    }
-
-    drawLayer(layer, context = this.context): void {
-        let offsetX = -this.camera.x + (this.tilesInView.startCol * this.tileWidth);
-        let offsetY = -this.camera.y + (this.tilesInView.startRow * this.tileHeight);    
-        _.each(_.range(this.colCount), row => {
-            _.each(_.range(this.rowCount), col => {
-                let img = this.images[layer][`${row} ${col}`];
-                if (img) {
-                    let x = (col * this.tileHeight) + offsetX;
-                    let y = (row * this.tileWidth) + offsetY;
-                    img.onload = function() {
-                        context.drawImage(img, x, y, this.tileHeight, this.tileWidth);
-                    }.bind(this);
-                };
-            })
-        })
-    }
-
-    draw(context = this.context): void {
-        _.each(_.range(this.layers.length), layer => {
-            this.drawLayer(layer);
         });
     }
 }
