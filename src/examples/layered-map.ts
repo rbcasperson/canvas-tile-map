@@ -45,4 +45,4 @@ var settings = {
 }
 
 let game = new Game(settings);
-game.draw();
+game.drawView();

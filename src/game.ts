@@ -51,8 +51,8 @@ export class Game {
             _.each(_.range(this.map.rowCount), col => {
                 let img = this.map.images[layer][`${row} ${col}`];
                 if (img) {
-                    let x = (col * this.map.tileHeight) + offsetX;
-                    let y = (row * this.map.tileWidth) + offsetY;
+                    let x = (col * this.map.tileWidth) + offsetX;
+                    let y = (row * this.map.tileHeight) + offsetY;
                     img.onload = function() {
                         context.drawImage(img, x, y, this.map.tileHeight, this.map.tileWidth);
                     }.bind(this);
@@ -61,15 +61,22 @@ export class Game {
         })
     }
 
-    draw(): void {
+    drawView(): void {
         let offsetX = -this.camera.x + (this.tilesInView.startCol * this.map.tileWidth);
         let offsetY = -this.camera.y + (this.tilesInView.startRow * this.map.tileHeight);
+        console.log(offsetX, offsetY);
         _.each(_.range(this.map.layers.length), layer => {
             this.drawLayer(layer, offsetX, offsetY);
         });
     }
 
-    update() {
+    clearView(): void {
+        this.context.clearRect(0, 0, this.map.width, this.map.height);
+    }
 
+    update() {
+        this.clearView();
+        this.camera.x = 5;
+        this.drawView();
     }
 }

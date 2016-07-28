@@ -49,4 +49,5 @@ var settings = {
 }
 
 let game = new Game(settings);
-game.draw();
+game.camera.move(0, 25);
+game.drawView();
