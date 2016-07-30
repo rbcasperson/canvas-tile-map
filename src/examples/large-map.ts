@@ -45,9 +45,28 @@ var settings = {
     camera: {
         height: 300,
         width: 300
+    },
+    keyboard: {
+        keys: {
+            LEFT: {
+                code: 37,
+                action: 'move -2 0'
+            },
+            RIGHT: {
+                code: 39,
+                action: 'move 2 0'
+            },
+            UP: {
+                code: 38,
+                action: 'move 0 -2'
+            },
+            DOWN: {
+                code: 40,
+                action: 'move 0 2'
+            }
+        }
     }
 }
 
 let game = new Game(settings);
-game.camera.move(0, 25);
 game.drawView();
