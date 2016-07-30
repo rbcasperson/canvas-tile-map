@@ -1,4 +1,4 @@
-import { Map } from '../map';
+import { Game } from '../game';
 
 var layers = [
     [ // base layer
@@ -28,16 +28,21 @@ var layers = [
 
 ];
 
-var tileSize = 50; //pixels
-var canvasID: string = 'layered-map';
-var imageSources = [
-    null, // 0
-    './static/images/grass.jpg', // 1
-    './static/images/stone-path.jpg', // 2
-    './static/images/sand.jpg', // 3
-    './static/images/bush.png' // 4
-];
+var settings = {
+    canvasID: 'layered-map',
+    map: {
+        layers: layers,
+        tileHeight: 50,
+        tileWidth: 50,
+        imageSources: [
+            null, // 0
+            './static/images/grass.jpg', // 1
+            './static/images/stone-path.jpg', // 2
+            './static/images/sand.jpg', // 3
+            './static/images/bush.png' // 4
+        ]
+    }
+}
 
-let map = new Map(canvasID, imageSources, layers, tileSize);
-map.draw();
-
+let game = new Game(settings);
+game.drawView();

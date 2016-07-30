@@ -1,11 +1,21 @@
 declare var require: any;
 let _ = require('lodash');
+import { Camera } from './camera';
+
+export interface MapSettings {
+    layers: number[][][];
+    tileHeight: number;
+    tileWidth: number;
+    imageSources: string[];
+}
 
 export class Map {
     // `layers` are ordered with bottom-most layer first
     layers: number[][][];
-    height: number;
-    width: number;
+    colCount: number; // # of columns in each layer
+    rowCount: number; // # of rows in each layer
+    height: number; // in pixels
+    width: number; // in pixels
     images: {[key: number]: HTMLImageElement}[];
     // `imageSources` are a list of sources (src) to put inside <img> elements
     // when creating a layer of tiles, each tile should reference the index of 
@@ -13,31 +23,27 @@ export class Map {
     imageSources: string[]
     tileWidth: number;
     tileHeight: number;
-    canvas: any;
-    context: any
 
-    constructor(canvasID: string, imageSources, layers, tileHeight, tileWdith = tileHeight) {
-        this.layers = layers;
-        this.height = layers[0].length;
-        this.width = layers[0][0].length;
-        this.tileHeight = tileHeight;
-        this.tileWidth = tileWdith;
-        this.canvas = document.getElementById(canvasID);
-        this.canvas.height = this.height * this.tileHeight;
-        this.canvas.width = this.width * this.tileWidth;
-        this.context = this.canvas.getContext('2d');
-        this.imageSources = imageSources;
+    constructor(settings: MapSettings) {
+        this.layers = settings.layers;
+        this.colCount = settings.layers[0].length;
+        this.rowCount = settings.layers[0][0].length;
+        this.tileHeight = settings.tileHeight;
+        this.tileWidth = settings.tileWidth;
+        this.height = this.colCount * this.tileHeight;
+        this.width = this.rowCount * this.tileWidth;
+        this.imageSources = settings.imageSources;
         this.images = [];
         this.setImages();
     }
 
     setImages(): void {
         _.each(_.range(this.layers.length), layer => {
-            _.each(_.range(this.height), row => {
-                _.each(_.range(this.width), col => {
-                    this.images.push({});
+            this.images.push({});
+            _.each(_.range(this.colCount), row => {
+                _.each(_.range(this.rowCount), col => {
                     let index: number = this.layers[layer][row][col];
-                    if (index !== 0) {
+                    if (this.imageSources[index]) {
                         let img = new Image();
                         img.src = this.imageSources[index];
                         this.images[layer][`${row} ${col}`] = img;
@@ -46,27 +52,6 @@ export class Map {
                     }
                 });
             });
-        });
-    }
-
-    drawLayer(layer, context = this.context): void {
-        _.each(_.range(this.height), row => {
-            _.each(_.range(this.width), col => {
-                let img = this.images[layer][`${row} ${col}`];
-                if (img) {
-                    let x = col * this.tileHeight;
-                    let y = row * this.tileWidth;
-                    img.onload = function() {
-                        context.drawImage(img, x, y, this.tileHeight, this.tileWidth);
-                    }.bind(this);
-                };
-            })
-        })
-    }
-
-    draw(context = this.context): void {
-        _.each(_.range(this.layers.length), layer => {
-            this.drawLayer(layer);
         });
     }
 }
