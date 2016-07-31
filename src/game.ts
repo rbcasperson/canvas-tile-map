@@ -17,6 +17,7 @@ export class Game {
     keyboard: Keyboard;
     canvas: any;
     context: any;
+    timeSinceLast
 
     constructor(settings: GameSettings) {
         this.map = new Map(settings.map);
@@ -43,9 +44,7 @@ export class Game {
         this.canvas.height = this.camera.height;
         this.canvas.width = this.camera.width;
         this.context = this.canvas.getContext('2d');
-
-        // temporary
-        setInterval(this.update.bind(this), 50);
+        
     }
 
     get tilesInView() {
@@ -61,6 +60,16 @@ export class Game {
         };
     }
 
+    run(): void {
+        this.drawView();
+        window.requestAnimationFrame(this.tick.bind(this));
+    }
+
+    tick(elapsed): void {
+        window.requestAnimationFrame(this.tick.bind(this));
+        this.update();
+    }
+
     update() {
         _.each(this.keyboard.keys, key => {
             if (key.isDown) {
@@ -71,6 +80,7 @@ export class Game {
                 }
             }
         })
+
     }
 
     drawLayer(layer, offsetX, offsetY): void {   

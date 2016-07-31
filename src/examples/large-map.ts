@@ -69,4 +69,4 @@ var settings = {
 }
 
 let game = new Game(settings);
-game.drawView();
+game.run();
