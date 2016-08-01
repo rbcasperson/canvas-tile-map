@@ -2,6 +2,8 @@ declare var require: any;
 let _ = require('lodash');
 import { Camera } from './camera';
 
+let Promise: any;
+
 export interface MapSettings {
     layers: number[][][];
     tileHeight: number;
@@ -23,6 +25,7 @@ export class Map {
     // its corresponding source in the imageSources list.
     imageSources: string[];
     spriteSheet: any;
+    spriteSheetSettings: any;
     tileWidth: number;
     tileHeight: number;
 
@@ -35,13 +38,21 @@ export class Map {
         this.height = this.colCount * this.tileHeight;
         this.width = this.rowCount * this.tileWidth;
         if (settings.imageSources) {
+            this.images = [];
             this.imageSources = settings.imageSources;
         }
         if (settings.spriteSheet) {
-            this.spriteSheet = this.loadSpriteSheet(settings.spriteSheet);
+            this.spriteSheetSettings = settings.spriteSheet;
+            this.spriteSheet = {};
         }
-        this.images = [];
-        // this.setImages();
+    }
+
+    load(): void {
+        if (this.spriteSheet) {
+            this.loadSpriteSheet(this.spriteSheetSettings);
+        } else {
+            this.setImages();
+        }
     }
 
     loadSpriteSheet(settings) {
@@ -61,7 +72,7 @@ export class Map {
 
         })
 
-        return spriteSheet
+        this.spriteSheet = spriteSheet;
     }
 
     setImages(): void {

@@ -4,6 +4,8 @@ import { Camera, CameraSettings } from './camera';
 import { Map, MapSettings } from './map';
 import { Keyboard, KeyboardSettings } from './keyboard';
 
+let Promise: any;
+
 interface GameSettings {
     canvasID: string;
     map: MapSettings;
@@ -30,7 +32,7 @@ export class Game {
             let defaultCameraSettings = {
                 height: this.map.height,
                 width: this.map.width,
-                speed: 0 // pixels per second
+                speed: 0 // camera will not move
             };
             this.camera = new Camera(this.map, defaultCameraSettings);
         };
@@ -64,8 +66,14 @@ export class Game {
     }
 
     run(): void {
-        this.drawView();
-        window.requestAnimationFrame(this.update.bind(this));
+        let promise = new Promise( function(resolve, reject) {
+            this.map.load();
+        })
+
+        promise.then(loaded => {
+            this.drawView();
+            window.requestAnimationFrame(this.update.bind(this));
+        });
     }
 
     update(totalTime): void {
