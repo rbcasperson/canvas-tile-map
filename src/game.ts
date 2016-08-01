@@ -17,7 +17,7 @@ export class Game {
     keyboard: Keyboard;
     canvas: any;
     context: any;
-    timeSinceLast
+    timeSinceLastUpdate: number;
 
     constructor(settings: GameSettings) {
         this.map = new Map(settings.map);
@@ -26,9 +26,11 @@ export class Game {
         if (settings.camera) {
             this.camera = new Camera(this.map, settings.camera);
         } else {
+            // creates a camera the same size as the map
             let defaultCameraSettings = {
                 height: this.map.height,
-                width: this.map.width
+                width: this.map.width,
+                speed: 0 // pixels per second
             };
             this.camera = new Camera(this.map, defaultCameraSettings);
         };
@@ -44,7 +46,8 @@ export class Game {
         this.canvas.height = this.camera.height;
         this.canvas.width = this.camera.width;
         this.context = this.canvas.getContext('2d');
-        
+
+        this.timeSinceLastUpdate = 0;
     }
 
     get tilesInView() {
@@ -62,21 +65,22 @@ export class Game {
 
     run(): void {
         this.drawView();
-        window.requestAnimationFrame(this.tick.bind(this));
+        window.requestAnimationFrame(this.update.bind(this));
     }
 
-    tick(elapsed): void {
-        window.requestAnimationFrame(this.tick.bind(this));
-        this.update();
-    }
+    update(totalTime): void {
+        window.requestAnimationFrame(this.update.bind(this));
 
-    update() {
+        // compute delta time in seconds
+        let delta = (totalTime - this.timeSinceLastUpdate) / 1000;
+        delta = _.min([delta, .25]);
+        this.timeSinceLastUpdate = totalTime;
         _.each(this.keyboard.keys, key => {
             if (key.isDown) {
                 let [action, ...params] = key.action.split(' ');
                 if (action == 'move') {
                     let [x, y] = _.map(params, _.toInteger);
-                    this.move(x, y);
+                    this.move(delta, x, y);
                 }
             }
         })
@@ -111,8 +115,8 @@ export class Game {
         this.context.clearRect(0, 0, this.map.width, this.map.height);
     }
 
-    move(deltaX, deltaY) {
-        this.camera.move(deltaX, deltaY);
+    move(delta, changeInX, changeInY) {
+        this.camera.move(delta, changeInX, changeInY);
         this.map.setImages();
         this.clearView;
         this.drawView();
