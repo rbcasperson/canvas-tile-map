@@ -59,6 +59,7 @@ export class Keyboard {
 	_onKeyDown(event) {
 		let keyCode = event.keyCode;
 		if (keyCode in this.codes) {
+			event.preventDefault();
 			this.keys[this.codes[keyCode]].isDown = true;
 		};
 
@@ -67,6 +68,7 @@ export class Keyboard {
 	_onKeyUp(event) {
 		let keyCode = event.keyCode;
 		if (keyCode in this.codes) {
+			event.preventDefault();
 			this.keys[this.codes[keyCode]].isDown = false;
 		};
 	}

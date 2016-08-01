@@ -29,7 +29,6 @@ export class Camera {
 	}
 
 	move(delta, dirX, dirY) {
-		console.log(dirX * this.speed * delta, dirY * this.speed * delta);
 		this.x += dirX * this.speed * delta;
 		this.y += dirY * this.speed * delta;
 		// prevent looking beyond the map

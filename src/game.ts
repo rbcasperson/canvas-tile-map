@@ -51,15 +51,15 @@ export class Game {
     }
 
     get tilesInView() {
-        var startCol = Math.floor(this.camera.x / this.map.tileWidth);
+        var startCol = _.floor(this.camera.x / this.map.tileWidth);
         var endCol = startCol + (this.camera.width / this.map.tileWidth);
-        var startRow = Math.floor(this.camera.y / this.map.tileHeight);
+        var startRow = _.floor(this.camera.y / this.map.tileHeight);
         var endRow = startRow + (this.camera.height / this.map.tileHeight);
         return {
             startCol: startCol, 
-            endCol: endCol, 
+            endCol: _.min([endCol, this.map.colCount - 1]), 
             startRow: startRow, 
-            endRow: endRow
+            endRow: _.min([endRow, this.map.rowCount - 1])
         };
     }
 
@@ -75,6 +75,7 @@ export class Game {
         let delta = (totalTime - this.timeSinceLastUpdate) / 1000;
         delta = _.min([delta, .25]);
         this.timeSinceLastUpdate = totalTime;
+
         _.each(this.keyboard.keys, key => {
             if (key.isDown) {
                 let [action, ...params] = key.action.split(' ');
@@ -85,6 +86,32 @@ export class Game {
             }
         })
 
+    }
+
+    drawLayerFromSpriteSheet(layer, offsetX, offsetY): void {
+        let context = this.context;
+        let tiles = this.tilesInView;
+        _.each(_.range(tiles.startRow, tiles.endRow + 1), row => {
+            _.each(_.range(tiles.startCol, tiles.endCol + 1), col => {
+                let tile = this.map.layers[layer][row][col];
+                if (tile !== 0) {
+                    let source = this.map.spriteSheet[tile];
+                    let destX = ((col - tiles.startCol) * this.map.tileWidth) + offsetX;
+                    let destY = ((row - tiles.startRow) * this.map.tileHeight) + offsetY;
+                    context.drawImage(
+                        this.map.spriteSheet.image,
+                        source.x,
+                        source.y,
+                        source.width,
+                        source.height,
+                        _.round(destX),
+                        _.round(destY),
+                        this.map.tileWidth,
+                        this.map.tileHeight
+                    )
+                }
+            })
+        })
     }
 
     drawLayer(layer, offsetX, offsetY): void {   
@@ -104,11 +131,19 @@ export class Game {
     }
 
     drawView(): void {
-        let offsetX = -this.camera.x + (this.tilesInView.startCol * this.map.tileWidth);
-        let offsetY = -this.camera.y + (this.tilesInView.startRow * this.map.tileHeight);
-        _.each(_.range(this.map.layers.length), layer => {
-            this.drawLayer(layer, offsetX, offsetY);
-        });
+        let offsetX = _.round(-this.camera.x + (this.tilesInView.startCol * this.map.tileWidth));
+        let offsetY = _.round(-this.camera.y + (this.tilesInView.startRow * this.map.tileHeight));
+
+        if (this.map.spriteSheet) {
+            _.each(_.range(this.map.layers.length), layer => {
+                this.drawLayerFromSpriteSheet(layer, offsetX, offsetY);
+            });
+        }
+        else {
+            _.each(_.range(this.map.layers.length), layer => {
+                this.drawLayer(layer, offsetX, offsetY);
+            });
+        }
     }
 
     clearView(): void {
@@ -117,7 +152,7 @@ export class Game {
 
     move(delta, changeInX, changeInY) {
         this.camera.move(delta, changeInX, changeInY);
-        this.map.setImages();
+        //this.map.setImages();
         this.clearView;
         this.drawView();
     }

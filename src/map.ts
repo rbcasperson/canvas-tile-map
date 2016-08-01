@@ -6,7 +6,8 @@ export interface MapSettings {
     layers: number[][][];
     tileHeight: number;
     tileWidth: number;
-    imageSources: string[];
+    imageSources?: string[];
+    spriteSheet?: any;
 }
 
 export class Map {
@@ -20,7 +21,8 @@ export class Map {
     // `imageSources` are a list of sources (src) to put inside <img> elements
     // when creating a layer of tiles, each tile should reference the index of 
     // its corresponding source in the imageSources list.
-    imageSources: string[]
+    imageSources: string[];
+    spriteSheet: any;
     tileWidth: number;
     tileHeight: number;
 
@@ -32,9 +34,34 @@ export class Map {
         this.tileWidth = settings.tileWidth;
         this.height = this.colCount * this.tileHeight;
         this.width = this.rowCount * this.tileWidth;
-        this.imageSources = settings.imageSources;
+        if (settings.imageSources) {
+            this.imageSources = settings.imageSources;
+        }
+        if (settings.spriteSheet) {
+            this.spriteSheet = this.loadSpriteSheet(settings.spriteSheet);
+        }
         this.images = [];
-        this.setImages();
+        // this.setImages();
+    }
+
+    loadSpriteSheet(settings) {
+        let spriteSheet: any = {};
+
+        let img = new Image();
+        img.src = settings.src;
+        spriteSheet.image = img;
+
+        _.each(_.range(1, settings.imageCount + 1), key => {
+            spriteSheet[key] = {
+                x: (key - 1) * settings.imageWidth,
+                y: 0,
+                width: settings.imageWidth,
+                height: settings.imageHeight
+            };
+
+        })
+
+        return spriteSheet
     }
 
     setImages(): void {
