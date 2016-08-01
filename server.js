@@ -8,14 +8,30 @@ execSync('npm run all', { stdio: [0, 1, 2] });
 browserSync.init({
     server: true,
     files: [
-        'src/examples/basic-map.html',
-        'src/examples/layered-map.html',
-        'src/examples/large-map.html'
+        'index.html'
     ]
 });
 
-browserSync.watch('src/examples/**/*', (event) => {
+browserSync.watch('src/*.ts', (event) => {
     if (event === 'change') {
         execSync('npm run all', { stdio: [0, 1, 2] });
+    }
+});
+
+browserSync.watch('src/examples/basic-map.ts', (event) => {
+    if (event === 'change') {
+        execSync('npm run basic', { stdio: [0, 1, 2] });
+    }
+});
+
+browserSync.watch('src/examples/layered-map.ts', (event) => {
+    if (event === 'change') {
+        execSync('npm run layered', { stdio: [0, 1, 2] });
+    }
+});
+
+browserSync.watch('src/examples/large-map.ts', (event) => {
+    if (event === 'change') {
+        execSync('npm run large', { stdio: [0, 1, 2] });
     }
 });
