@@ -2,8 +2,6 @@ declare var require: any;
 let _ = require('lodash');
 import { Camera } from './camera';
 
-let Promise: any;
-
 export interface MapSettings {
     layers: number[][][];
     tileHeight: number;

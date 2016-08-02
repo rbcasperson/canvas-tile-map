@@ -33,9 +33,10 @@
     "start": "node server.js",
     "postinstall": "typings install && mkdir bundled",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "all": "tsc && browserify built/examples/basic-map.js -o bundled/basic-map.js && browserify built/examples/layered-map.js -o bundled/layered-map.js && tsc && browserify built/examples/large-map.js -o bundled/large-map.js",
+    "all": "tsc && browserify built/examples/basic-map.js -o bundled/basic-map.js && browserify built/examples/layered-map.js -o bundled/layered-map.js && tsc && browserify built/examples/large-map.js -o bundled/large-map.js && browserify built/examples/character-map.js -o bundled/character-map.js",
     "basic": "tsc && browserify built/examples/basic-map.js -o bundled/basic-map.js",
     "layered": "tsc && browserify built/examples/layered-map.js -o bundled/layered-map.js",
-    "large": "tsc && browserify built/examples/large-map.js -o bundled/large-map.js"
+    "large": "tsc && browserify built/examples/large-map.js -o bundled/large-map.js",
+    "character": "tsc && browserify built/examples/character-map.js -o bundled/character-map.js"
   }
 }

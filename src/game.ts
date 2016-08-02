@@ -3,20 +3,21 @@ let _ = require('lodash');
 import { Camera, CameraSettings } from './camera';
 import { Map, MapSettings } from './map';
 import { Keyboard, KeyboardSettings } from './keyboard';
-
-let Promise: any;
+import { Character, CharacterSettings } from './character';
 
 interface GameSettings {
     canvasID: string;
     map: MapSettings;
     camera?: CameraSettings;
     keyboard?: KeyboardSettings;
+    character?: CharacterSettings;
 }
 
 export class Game {
     map: Map;
     camera: Camera;
     keyboard: Keyboard;
+    character: Character;
     canvas: any;
     context: any;
     timeSinceLastUpdate: number;
@@ -42,6 +43,11 @@ export class Game {
             this.keyboard = new Keyboard(settings.keyboard);
         } else {
             this.keyboard = new Keyboard();
+        }
+
+        // set up the character
+        if (settings.character) {
+            this.character = new Character(settings.character)
         }
 
         this.canvas = document.getElementById(settings.canvasID);
@@ -95,7 +101,16 @@ export class Game {
                 }
             }
         })
+    }
 
+    move(deltaTime, deltaX, deltaY) {
+        if (this.character) {
+            this.character.move(deltaTime, deltaX, deltaY);
+        }
+
+        this.camera.move(deltaTime, deltaX, deltaY);
+        this.clearView;
+        this.drawView();
     }
 
     drawLayer(layer, offsetX, offsetY): void {
@@ -124,21 +139,32 @@ export class Game {
         })
     }
 
+    drawCharacter() {
+        let characterCenteredX = (this.camera.width / 2) - (this.character.width / 2);
+        let characterCenteredY = (this.camera.height / 2) - (this.character.height / 2);
+        let screenX = characterCenteredX // figure this out
+        let screenY = characterCenteredY // figure this out
+        this.context.drawImage(
+            this.character.image,
+            screenX,
+            screenY,
+            this.character.width,
+            this.character.height
+        );
+    }
+
     drawView(): void {
         let offsetX = _.round(-this.camera.x + (this.tilesInView.startCol * this.map.tileWidth));
         let offsetY = _.round(-this.camera.y + (this.tilesInView.startRow * this.map.tileHeight));
         _.each(_.range(this.map.layers.length), layer => {
+            if(this.character && layer === this.character.layer) {
+                this.drawCharacter();
+            };
             this.drawLayer(layer, offsetX, offsetY);
         });
     }
 
     clearView(): void {
-        this.context.clearRect(0, 0, this.map.width, this.map.height);
-    }
-
-    move(deltaTime, deltaX, deltaY) {
-        this.camera.move(deltaTime, deltaX, deltaY);
-        this.clearView;
-        this.drawView();
+        this.context.clearRect(0, 0, this.camera.width, this.camera.height);
     }
 }
