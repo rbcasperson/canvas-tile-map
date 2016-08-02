@@ -28,9 +28,9 @@ export class Camera {
 		this.speed = settings.speed;
 	}
 
-	move(delta, dirX, dirY) {
-		this.x += dirX * this.speed * delta;
-		this.y += dirY * this.speed * delta;
+	move(deltaTime, deltaX, deltaY) {
+		this.x += deltaX * this.speed * deltaTime;
+		this.y += deltaY * this.speed * deltaTime;
 		// prevent looking beyond the map
 		this.x = Math.max(0, Math.min(this.x, this.maxX));
     	this.y = Math.max(0, Math.min(this.y, this.maxY));
