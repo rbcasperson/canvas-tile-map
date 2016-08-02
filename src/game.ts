@@ -81,24 +81,24 @@ export class Game {
     update(totalTime): void {
         window.requestAnimationFrame(this.update.bind(this));
 
-        // compute delta time in seconds
-        let delta = (totalTime - this.timeSinceLastUpdate) / 1000;
-        delta = _.min([delta, .25]);
+        // compute deltaTime time in seconds
+        let deltaTime = (totalTime - this.timeSinceLastUpdate) / 1000;
+        deltaTime = _.min([deltaTime, .25]);
         this.timeSinceLastUpdate = totalTime;
 
         _.each(this.keyboard.keys, key => {
             if (key.isDown) {
                 let [action, ...params] = key.action.split(' ');
                 if (action == 'move') {
-                    let [x, y] = _.map(params, _.toInteger);
-                    this.move(delta, x, y);
+                    let [deltaX, deltaY] = _.map(params, _.toInteger);
+                    this.move(deltaTime, deltaX, deltaY);
                 }
             }
         })
 
     }
 
-    drawLayerFromSpriteSheet(layer, offsetX, offsetY): void {
+    drawLayer(layer, offsetX, offsetY): void {
         let context = this.context;
         let tiles = this.tilesInView;
         _.each(_.range(tiles.startRow, tiles.endRow + 1), row => {
@@ -124,45 +124,20 @@ export class Game {
         })
     }
 
-    drawLayer(layer, offsetX, offsetY): void {   
-        let context = this.context; 
-        _.each(_.range(this.tilesInView.startRow, this.tilesInView.endRow + 1), row => {
-            _.each(_.range(this.tilesInView.startCol, this.tilesInView.endCol + 1), col => {
-                let img = this.map.images[layer][`${row} ${col}`];
-                if (img) {
-                    let x = ((col - this.tilesInView.startCol) * this.map.tileWidth) + offsetX;
-                    let y = ((row - this.tilesInView.startRow) * this.map.tileHeight) + offsetY;
-                    img.onload = function() {
-                        context.drawImage(img, x, y, this.map.tileHeight, this.map.tileWidth);
-                    }.bind(this);
-                };
-            })
-        })
-    }
-
     drawView(): void {
         let offsetX = _.round(-this.camera.x + (this.tilesInView.startCol * this.map.tileWidth));
         let offsetY = _.round(-this.camera.y + (this.tilesInView.startRow * this.map.tileHeight));
-
-        if (this.map.spriteSheet) {
-            _.each(_.range(this.map.layers.length), layer => {
-                this.drawLayerFromSpriteSheet(layer, offsetX, offsetY);
-            });
-        }
-        else {
-            _.each(_.range(this.map.layers.length), layer => {
-                this.drawLayer(layer, offsetX, offsetY);
-            });
-        }
+        _.each(_.range(this.map.layers.length), layer => {
+            this.drawLayer(layer, offsetX, offsetY);
+        });
     }
 
     clearView(): void {
         this.context.clearRect(0, 0, this.map.width, this.map.height);
     }
 
-    move(delta, changeInX, changeInY) {
-        this.camera.move(delta, changeInX, changeInY);
-        //this.map.setImages();
+    move(deltaTime, deltaX, deltaY) {
+        this.camera.move(deltaTime, deltaX, deltaY);
         this.clearView;
         this.drawView();
     }

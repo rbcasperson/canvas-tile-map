@@ -12,23 +12,23 @@ export interface KeyboardSettings {
 
 let defaultKeyboardSettings = {
 	keys: {
-        LEFT: {
-            code: 37,
-            action: 'this.move(-1, 0)'
-        },
-        RIGHT: {
-            code: 39,
-            action: 'this.move(1, 0)'
-        },
-        UP: {
-            code: 38,
-            action: 'this.move(0, -1)'
-        },
-        DOWN: {
-            code: 40,
-            action: 'this.move(0, 1)'
-        }
-    }
+		LEFT: {
+			code: 37,
+			action: 'move -1 0'
+		},
+		RIGHT: {
+			code: 39,
+			action: 'move 1 0'
+		},
+		UP: {
+			code: 38,
+			action: 'move 0 -1'
+		},
+		DOWN: {
+			code: 40,
+			action: 'move 0 1'
+		}
+	}
 };
 
 export class Keyboard {
@@ -50,7 +50,6 @@ export class Keyboard {
 	listenForEvents() {
 		window.addEventListener('keydown', this._onKeyDown.bind(this));
 	    window.addEventListener('keyup', this._onKeyUp.bind(this));
-
 	    _.each(this.keys, (metadata, name) => {
 	    	this.keys[name].isDown = false;
 	    })
@@ -58,7 +57,8 @@ export class Keyboard {
 
 	_onKeyDown(event) {
 		let keyCode = event.keyCode;
-		if (keyCode in this.codes) {
+		let codes = this.codes;
+		if (this.codes[keyCode]) {
 			event.preventDefault();
 			this.keys[this.codes[keyCode]].isDown = true;
 		};
@@ -67,7 +67,7 @@ export class Keyboard {
 
 	_onKeyUp(event) {
 		let keyCode = event.keyCode;
-		if (keyCode in this.codes) {
+		if (this.codes[keyCode]) {
 			event.preventDefault();
 			this.keys[this.codes[keyCode]].isDown = false;
 		};
