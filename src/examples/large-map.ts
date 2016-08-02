@@ -44,26 +44,6 @@ var settings = {
         height: 300,
         width: 300,
         speed: 100
-    },
-    keyboard: {
-        keys: {
-            LEFT: {
-                code: 37,
-                action: 'move -1 0'
-            },
-            RIGHT: {
-                code: 39,
-                action: 'move 1 0'
-            },
-            UP: {
-                code: 38,
-                action: 'move 0 -1'
-            },
-            DOWN: {
-                code: 40,
-                action: 'move 0 1'
-            }
-        }
     }
 }
 
