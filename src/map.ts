@@ -29,6 +29,8 @@ export class Map {
     tileWidth: number;
     tileHeight: number;
 
+    isLoaded: Boolean;
+
     constructor(settings: MapSettings) {
         this.layers = settings.layers;
         this.colCount = settings.layers[0].length;
@@ -45,6 +47,7 @@ export class Map {
             this.spriteSheetSettings = settings.spriteSheet;
             this.spriteSheet = {};
         }
+        this.isLoaded = false;
     }
 
     load(): void {
@@ -59,6 +62,9 @@ export class Map {
         let spriteSheet: any = {};
 
         let img = new Image();
+        img.onload = () => {
+            this.isLoaded = true;
+        };
         img.src = settings.src;
         spriteSheet.image = img;
 
@@ -71,7 +77,7 @@ export class Map {
             };
 
         })
-
+        
         this.spriteSheet = spriteSheet;
     }
 

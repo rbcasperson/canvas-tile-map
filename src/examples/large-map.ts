@@ -78,4 +78,5 @@ var settings = {
 }
 
 let game = new Game(settings);
+game.map.load();
 game.run()

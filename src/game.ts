@@ -66,14 +66,16 @@ export class Game {
     }
 
     run(): void {
-        let promise = new Promise( function(resolve, reject) {
-            this.map.load();
-        })
+        this.map.load();
 
-        promise.then(loaded => {
-            this.drawView();
-            window.requestAnimationFrame(this.update.bind(this));
-        });
+        let timer = setInterval(() => {
+            if (this.map.isLoaded) {
+                this.drawView();
+                window.requestAnimationFrame(this.update.bind(this));
+                clearInterval(timer);
+            };
+        }, 10)
+        
     }
 
     update(totalTime): void {
