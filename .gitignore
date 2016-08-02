@@ -2,6 +2,5 @@ node_modules
 typings
 built
 bundled
-index.html
 
 *.DS_Store
