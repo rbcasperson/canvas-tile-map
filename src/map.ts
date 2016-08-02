@@ -8,8 +8,7 @@ export interface MapSettings {
     layers: number[][][];
     tileHeight: number;
     tileWidth: number;
-    imageSources?: string[];
-    spriteSheet?: any;
+    spriteSheet: any;
 }
 
 export class Map {
@@ -19,11 +18,6 @@ export class Map {
     rowCount: number; // # of rows in each layer
     height: number; // in pixels
     width: number; // in pixels
-    images: {[key: number]: HTMLImageElement}[];
-    // `imageSources` are a list of sources (src) to put inside <img> elements
-    // when creating a layer of tiles, each tile should reference the index of 
-    // its corresponding source in the imageSources list.
-    imageSources: string[];
     spriteSheet: any;
     spriteSheetSettings: any;
     tileWidth: number;
@@ -39,63 +33,29 @@ export class Map {
         this.tileWidth = settings.tileWidth;
         this.height = this.colCount * this.tileHeight;
         this.width = this.rowCount * this.tileWidth;
-        if (settings.imageSources) {
-            this.images = [];
-            this.imageSources = settings.imageSources;
-        }
-        if (settings.spriteSheet) {
-            this.spriteSheetSettings = settings.spriteSheet;
-            this.spriteSheet = {};
-        }
+        this.spriteSheetSettings = settings.spriteSheet;
         this.isLoaded = false;
+        this.load();
     }
 
     load(): void {
-        if (this.spriteSheet) {
-            this.loadSpriteSheet(this.spriteSheetSettings);
-        } else {
-            this.setImages();
-        }
-    }
-
-    loadSpriteSheet(settings) {
-        let spriteSheet: any = {};
+        this.spriteSheet = {};
 
         let img = new Image();
         img.onload = () => {
             this.isLoaded = true;
         };
-        img.src = settings.src;
-        spriteSheet.image = img;
+        img.src = this.spriteSheetSettings.src;
+        this.spriteSheet.image = img;
 
-        _.each(_.range(1, settings.imageCount + 1), key => {
-            spriteSheet[key] = {
-                x: (key - 1) * settings.imageWidth,
+        _.each(_.range(1, this.spriteSheetSettings.imageCount + 1), key => {
+            this.spriteSheet[key] = {
+                x: (key - 1) * this.spriteSheetSettings.imageWidth,
                 y: 0,
-                width: settings.imageWidth,
-                height: settings.imageHeight
+                width: this.spriteSheetSettings.imageWidth,
+                height: this.spriteSheetSettings.imageHeight
             };
 
         })
-        
-        this.spriteSheet = spriteSheet;
-    }
-
-    setImages(): void {
-        _.each(_.range(this.layers.length), layer => {
-            this.images.push({});
-            _.each(_.range(this.colCount), row => {
-                _.each(_.range(this.rowCount), col => {
-                    let index: number = this.layers[layer][row][col];
-                    if (this.imageSources[index]) {
-                        let img = new Image();
-                        img.src = this.imageSources[index];
-                        this.images[layer][`${row} ${col}`] = img;
-                    } else {
-                        this.images[layer][`${row} ${col}`] = null;
-                    }
-                });
-            });
-        });
     }
 }

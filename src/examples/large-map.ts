@@ -25,7 +25,6 @@ var layers = [
         [0, 0, 0, 0, 0, 0, 5, 5, 0, 0],
         [0, 0, 0, 0, 0, 0, 5, 5, 0, 0],
     ]
-
 ];
 
 var settings = {
@@ -34,15 +33,6 @@ var settings = {
         layers: layers,
         tileHeight: 50,
         tileWidth: 50,
-        /*
-        imageSources: [
-            null, // 0
-            './static/images/grass.jpg', // 1
-            './static/images/stone-path.jpg', // 2
-            './static/images/sand.jpg', // 3
-            './static/images/bush.jpg' // 4
-        ],
-        */
         spriteSheet: {
             src: './static/images/tiles.png',
             imageCount: 5,
@@ -78,5 +68,4 @@ var settings = {
 }
 
 let game = new Game(settings);
-game.map.load();
 game.run()

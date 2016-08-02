@@ -124,36 +124,12 @@ export class Game {
         })
     }
 
-    drawLayer(layer, offsetX, offsetY): void {   
-        let context = this.context; 
-        _.each(_.range(this.tilesInView.startRow, this.tilesInView.endRow + 1), row => {
-            _.each(_.range(this.tilesInView.startCol, this.tilesInView.endCol + 1), col => {
-                let img = this.map.images[layer][`${row} ${col}`];
-                if (img) {
-                    let x = ((col - this.tilesInView.startCol) * this.map.tileWidth) + offsetX;
-                    let y = ((row - this.tilesInView.startRow) * this.map.tileHeight) + offsetY;
-                    img.onload = function() {
-                        context.drawImage(img, x, y, this.map.tileHeight, this.map.tileWidth);
-                    }.bind(this);
-                };
-            })
-        })
-    }
-
     drawView(): void {
         let offsetX = _.round(-this.camera.x + (this.tilesInView.startCol * this.map.tileWidth));
         let offsetY = _.round(-this.camera.y + (this.tilesInView.startRow * this.map.tileHeight));
-
-        if (this.map.spriteSheet) {
-            _.each(_.range(this.map.layers.length), layer => {
-                this.drawLayerFromSpriteSheet(layer, offsetX, offsetY);
-            });
-        }
-        else {
-            _.each(_.range(this.map.layers.length), layer => {
-                this.drawLayer(layer, offsetX, offsetY);
-            });
-        }
+        _.each(_.range(this.map.layers.length), layer => {
+            this.drawLayerFromSpriteSheet(layer, offsetX, offsetY);
+        });
     }
 
     clearView(): void {
@@ -162,7 +138,6 @@ export class Game {
 
     move(delta, changeInX, changeInY) {
         this.camera.move(delta, changeInX, changeInY);
-        //this.map.setImages();
         this.clearView;
         this.drawView();
     }
