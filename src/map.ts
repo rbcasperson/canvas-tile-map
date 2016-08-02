@@ -33,27 +33,27 @@ export class Map {
         this.tileWidth = settings.tileWidth;
         this.height = this.colCount * this.tileHeight;
         this.width = this.rowCount * this.tileWidth;
-        this.spriteSheetSettings = settings.spriteSheet;
+        this.spriteSheet = {
+            settings: settings.spriteSheet
+        };
         this.isLoaded = false;
         this.load();
     }
 
     load(): void {
-        this.spriteSheet = {};
-
         let img = new Image();
         img.onload = () => {
             this.isLoaded = true;
         };
-        img.src = this.spriteSheetSettings.src;
+        img.src = this.spriteSheet.settings.src;
         this.spriteSheet.image = img;
 
-        _.each(_.range(1, this.spriteSheetSettings.imageCount + 1), key => {
+        _.each(_.range(1, this.spriteSheet.settings.imageCount + 1), key => {
             this.spriteSheet[key] = {
-                x: (key - 1) * this.spriteSheetSettings.imageWidth,
+                x: (key - 1) * this.spriteSheet.settings.imageWidth,
                 y: 0,
-                width: this.spriteSheetSettings.imageWidth,
-                height: this.spriteSheetSettings.imageHeight
+                width: this.spriteSheet.settings.imageWidth,
+                height: this.spriteSheet.settings.imageHeight
             };
 
         })
