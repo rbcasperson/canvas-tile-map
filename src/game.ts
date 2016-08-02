@@ -4,6 +4,8 @@ import { Camera, CameraSettings } from './camera';
 import { Map, MapSettings } from './map';
 import { Keyboard, KeyboardSettings } from './keyboard';
 
+let Promise: any;
+
 interface GameSettings {
     canvasID: string;
     map: MapSettings;
@@ -17,6 +19,7 @@ export class Game {
     keyboard: Keyboard;
     canvas: any;
     context: any;
+    timeSinceLastUpdate: number;
 
     constructor(settings: GameSettings) {
         this.map = new Map(settings.map);
@@ -25,9 +28,11 @@ export class Game {
         if (settings.camera) {
             this.camera = new Camera(this.map, settings.camera);
         } else {
+            // creates a camera the same size as the map
             let defaultCameraSettings = {
                 height: this.map.height,
-                width: this.map.width
+                width: this.map.width,
+                speed: 0 // camera will not move
             };
             this.camera = new Camera(this.map, defaultCameraSettings);
         };
@@ -44,32 +49,78 @@ export class Game {
         this.canvas.width = this.camera.width;
         this.context = this.canvas.getContext('2d');
 
-        // temporary
-        setInterval(this.update.bind(this), 50);
+        this.timeSinceLastUpdate = 0;
     }
 
     get tilesInView() {
-        var startCol = Math.floor(this.camera.x / this.map.tileWidth);
+        var startCol = _.floor(this.camera.x / this.map.tileWidth);
         var endCol = startCol + (this.camera.width / this.map.tileWidth);
-        var startRow = Math.floor(this.camera.y / this.map.tileHeight);
+        var startRow = _.floor(this.camera.y / this.map.tileHeight);
         var endRow = startRow + (this.camera.height / this.map.tileHeight);
         return {
             startCol: startCol, 
-            endCol: endCol, 
+            endCol: _.min([endCol, this.map.colCount - 1]), 
             startRow: startRow, 
-            endRow: endRow
+            endRow: _.min([endRow, this.map.rowCount - 1])
         };
     }
 
-    update() {
+    run(): void {
+        this.map.load();
+
+        let timer = setInterval(() => {
+            if (this.map.isLoaded) {
+                this.drawView();
+                window.requestAnimationFrame(this.update.bind(this));
+                clearInterval(timer);
+            };
+        }, 10)
+        
+    }
+
+    update(totalTime): void {
+        window.requestAnimationFrame(this.update.bind(this));
+
+        // compute delta time in seconds
+        let delta = (totalTime - this.timeSinceLastUpdate) / 1000;
+        delta = _.min([delta, .25]);
+        this.timeSinceLastUpdate = totalTime;
+
         _.each(this.keyboard.keys, key => {
             if (key.isDown) {
                 let [action, ...params] = key.action.split(' ');
                 if (action == 'move') {
                     let [x, y] = _.map(params, _.toInteger);
-                    this.move(x, y);
+                    this.move(delta, x, y);
                 }
             }
+        })
+
+    }
+
+    drawLayerFromSpriteSheet(layer, offsetX, offsetY): void {
+        let context = this.context;
+        let tiles = this.tilesInView;
+        _.each(_.range(tiles.startRow, tiles.endRow + 1), row => {
+            _.each(_.range(tiles.startCol, tiles.endCol + 1), col => {
+                let tile = this.map.layers[layer][row][col];
+                if (tile !== 0) {
+                    let source = this.map.spriteSheet[tile];
+                    let destX = ((col - tiles.startCol) * this.map.tileWidth) + offsetX;
+                    let destY = ((row - tiles.startRow) * this.map.tileHeight) + offsetY;
+                    context.drawImage(
+                        this.map.spriteSheet.image,
+                        source.x,
+                        source.y,
+                        source.width,
+                        source.height,
+                        _.round(destX),
+                        _.round(destY),
+                        this.map.tileWidth,
+                        this.map.tileHeight
+                    )
+                }
+            })
         })
     }
 
@@ -90,20 +141,28 @@ export class Game {
     }
 
     drawView(): void {
-        let offsetX = -this.camera.x + (this.tilesInView.startCol * this.map.tileWidth);
-        let offsetY = -this.camera.y + (this.tilesInView.startRow * this.map.tileHeight);
-        _.each(_.range(this.map.layers.length), layer => {
-            this.drawLayer(layer, offsetX, offsetY);
-        });
+        let offsetX = _.round(-this.camera.x + (this.tilesInView.startCol * this.map.tileWidth));
+        let offsetY = _.round(-this.camera.y + (this.tilesInView.startRow * this.map.tileHeight));
+
+        if (this.map.spriteSheet) {
+            _.each(_.range(this.map.layers.length), layer => {
+                this.drawLayerFromSpriteSheet(layer, offsetX, offsetY);
+            });
+        }
+        else {
+            _.each(_.range(this.map.layers.length), layer => {
+                this.drawLayer(layer, offsetX, offsetY);
+            });
+        }
     }
 
     clearView(): void {
         this.context.clearRect(0, 0, this.map.width, this.map.height);
     }
 
-    move(deltaX, deltaY) {
-        this.camera.move(deltaX, deltaY);
-        this.map.setImages();
+    move(delta, changeInX, changeInY) {
+        this.camera.move(delta, changeInX, changeInY);
+        //this.map.setImages();
         this.clearView;
         this.drawView();
     }

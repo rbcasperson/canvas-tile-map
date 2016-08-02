@@ -5,6 +5,7 @@ import { Map } from './map';
 export interface CameraSettings {
 	width: number;
 	height: number;
+	speed: number; // in pixels per second
 }
 
 export class Camera {
@@ -15,6 +16,7 @@ export class Camera {
 	maxY: number;
 	width: number;
 	height: number;
+	speed: number;
 
 	constructor(map: Map, settings: CameraSettings) {
 		this.width = settings.width;
@@ -23,11 +25,12 @@ export class Camera {
 		this.y = 0;
 		this.maxX = map.width - this.width;
 		this.maxY = map.height - this.height;
+		this.speed = settings.speed;
 	}
 
-	move(dirX, dirY) {
-		this.x += dirX;
-		this.y += dirY;
+	move(delta, dirX, dirY) {
+		this.x += dirX * this.speed * delta;
+		this.y += dirY * this.speed * delta;
 		// prevent looking beyond the map
 		this.x = Math.max(0, Math.min(this.x, this.maxX));
     	this.y = Math.max(0, Math.min(this.y, this.maxY));

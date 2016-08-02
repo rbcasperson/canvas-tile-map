@@ -2,11 +2,14 @@ declare var require: any;
 let _ = require('lodash');
 import { Camera } from './camera';
 
+let Promise: any;
+
 export interface MapSettings {
     layers: number[][][];
     tileHeight: number;
     tileWidth: number;
-    imageSources: string[];
+    imageSources?: string[];
+    spriteSheet?: any;
 }
 
 export class Map {
@@ -20,9 +23,13 @@ export class Map {
     // `imageSources` are a list of sources (src) to put inside <img> elements
     // when creating a layer of tiles, each tile should reference the index of 
     // its corresponding source in the imageSources list.
-    imageSources: string[]
+    imageSources: string[];
+    spriteSheet: any;
+    spriteSheetSettings: any;
     tileWidth: number;
     tileHeight: number;
+
+    isLoaded: Boolean;
 
     constructor(settings: MapSettings) {
         this.layers = settings.layers;
@@ -32,9 +39,46 @@ export class Map {
         this.tileWidth = settings.tileWidth;
         this.height = this.colCount * this.tileHeight;
         this.width = this.rowCount * this.tileWidth;
-        this.imageSources = settings.imageSources;
-        this.images = [];
-        this.setImages();
+        if (settings.imageSources) {
+            this.images = [];
+            this.imageSources = settings.imageSources;
+        }
+        if (settings.spriteSheet) {
+            this.spriteSheetSettings = settings.spriteSheet;
+            this.spriteSheet = {};
+        }
+        this.isLoaded = false;
+    }
+
+    load(): void {
+        if (this.spriteSheet) {
+            this.loadSpriteSheet(this.spriteSheetSettings);
+        } else {
+            this.setImages();
+        }
+    }
+
+    loadSpriteSheet(settings) {
+        let spriteSheet: any = {};
+
+        let img = new Image();
+        img.onload = () => {
+            this.isLoaded = true;
+        };
+        img.src = settings.src;
+        spriteSheet.image = img;
+
+        _.each(_.range(1, settings.imageCount + 1), key => {
+            spriteSheet[key] = {
+                x: (key - 1) * settings.imageWidth,
+                y: 0,
+                width: settings.imageWidth,
+                height: settings.imageHeight
+            };
+
+        })
+        
+        this.spriteSheet = spriteSheet;
     }
 
     setImages(): void {
