@@ -1,17 +1,17 @@
 {
   "name": "canvas-tile-map",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Using HTML's canvas element to create and maneuver 2D game maps",
-  "main": "index.js",
+  "main": "built/game.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rbcasperson/canvas-tile-map.git"
   },
   "keywords": [
     "canvas",
-    "map",
     "tile",
     "map",
+    "2D",
     "game"
   ],
   "author": "Ryan Casperson <casperson.ryan@gmail.com>",
