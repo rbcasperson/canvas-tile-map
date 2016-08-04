@@ -217,6 +217,9 @@ export class Game {
             // draw the layer
             this.drawLayer(layer, offsetX, offsetY);
         });
+        if(this.character && this.map.layers.length <= this.character.layer) {
+            this.drawCharacter();
+        };
     }
 
     clearView(): void {

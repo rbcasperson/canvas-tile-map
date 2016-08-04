@@ -1,5 +1,5 @@
 built/examples
-bundled
+bundled/
 src
 typings
 index.html
