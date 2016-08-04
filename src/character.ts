@@ -9,6 +9,7 @@ export interface CharacterSettings {
     startX?: number;
     startY?: number;
     layer?: number;
+    collisions?: number[];
 }
 
 export class Character {

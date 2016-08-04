@@ -43,13 +43,15 @@ export class Game {
             this.keyboard = new Keyboard(settings.keyboard);
         } else {
             this.keyboard = new Keyboard();
-        }
+        };
 
         // set up the character
         if (settings.character) {
             this.character = new Character(this.map, this.camera, settings.character);
             this.character.is = this.characterScreenPosition;
-        }
+            // change this please!
+            this.map.collisions = settings.character.collisions;
+        };
 
         this.canvas = document.getElementById(settings.canvasID);
         this.canvas.height = this.camera.height;
@@ -134,9 +136,30 @@ export class Game {
 
     move(deltaTime, deltaX, deltaY) {
         if (this.character) {
+            // prevent any movement if there is a collision
+            let tilesApproaching = this.map.tilesApproaching(this.character, deltaX, deltaY);
+            let collision = false;
+            console.log(tilesApproaching);
+            _.each(tilesApproaching, point => {
+                let [row, col] = point;
+                console.log(point);
+                console.log(row, col);
+                if (this.map.hasCollisionAt(row, col)) {
+                    collision = true;
+                };
+            });
+            if (collision) {
+                deltaX = 0;
+                deltaY = 0;
+            };
+
+            // move the character
             this.character.move(deltaTime, deltaX, deltaY);
+
+            // redetermine character's screen position
             this.character.is = this.characterScreenPosition;
-            // figure out if the camera needs to move
+
+            // move the camera only if the character should be centered
             if (!this.character.is.centered.horizontally) {
                 deltaX = 0;
             }
