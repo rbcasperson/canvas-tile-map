@@ -48,7 +48,8 @@ var settings = {
     character: {
         src: './static/images/face.png',
         height: 40,
-        width: 40
+        width: 40,
+        speed: 100
     }
 }
 
