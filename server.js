@@ -35,3 +35,9 @@ browserSync.watch('src/examples/large-map.ts', (event) => {
         execSync('npm run large', { stdio: [0, 1, 2] });
     }
 });
+
+browserSync.watch('src/examples/character-map.ts', (event) => {
+    if (event === 'change') {
+        execSync('npm run character', { stdio: [0, 1, 2] });
+    }
+});
