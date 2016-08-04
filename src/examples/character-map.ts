@@ -49,7 +49,8 @@ var settings = {
         src: './static/images/face.png',
         height: 40,
         width: 40,
-        speed: 100
+        speed: 100,
+        collisions: [3, 5]
     }
 }
 

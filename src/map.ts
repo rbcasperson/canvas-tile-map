@@ -20,6 +20,7 @@ export class Map {
     spriteSheetSettings: any;
     tileWidth: number;
     tileHeight: number;
+    collisions: number[];
 
     isLoaded: Boolean;
 
@@ -55,5 +56,53 @@ export class Map {
             };
 
         })
+    }
+
+    tileAt(x, y) {
+        return [_.floor(x / this.tileWidth), _.floor(y / this.tileHeight)];
+    }
+
+    tilesApproaching(character, deltaX, deltaY) {
+        let tiles = [];
+        let points = [];
+        if (deltaX = 1) { // moving right
+            let topRight = [character.x + character.width + 1, character.y];
+            let bottomRight = [character.x + character.width + 1, character.y + character.height];
+            points.push(topRight, bottomRight);
+        };
+        if (deltaY = 1) { // moving down
+            let bottomLeft = [character.x, character.y + character.height + 1];
+            let bottomRight = [character.x + character.width, character.y + character.height + 1];
+            points.push(bottomLeft, bottomRight);
+        };
+        if (deltaX === -1) { // moving left
+            let topLeft = [character.x - 1, character.y];
+            let bottomLeft = [character.x - 1, character.y + character.height];
+            points.push(topLeft, bottomLeft);
+        };
+        if (deltaY === -1) { // moving up
+            let topLeft = [character.x, character.y - 1];
+            let topRight = [character.x + character.width, character.y -1];
+        };
+        _.map(points, point => {
+            let [x, y] = point;
+            tiles.push(this.tileAt(x, y));
+        });
+        return tiles;
+    }
+
+    hasCollisionAt(col, row): boolean {
+        if (row < 0 || col < 0 || row >= this.rowCount || col >= this.colCount) {
+            return false;
+        }
+        let collision = false;
+        _.each(_.range(this.layers.length), layer => {
+            if (_.includes(this.collisions, this.layers[layer][row][col])) {
+                collision = true;
+            };
+        });
+        return collision
+        // use _.any() to maybe make this better
+        // or an old for loop so I can break
     }
 }
