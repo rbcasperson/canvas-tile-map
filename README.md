@@ -52,23 +52,6 @@ The settings object you create holds all of the information of your game. There 
 
 ### Required Settings
 
-```js
-var settings = {
-    canvasID:
-    map: {
-        layers:
-        tileHeight:
-        tileWidth:
-        spriteSheet {
-            src:
-            imageCount:
-            imageHeight:
-            imageWidth:
-        }
-    }
-}
-```
-
 - **canvasID**: The ID you assigned to your canvas element
 - **map**: An object containing features of your map
     - **layers**: A list of matrices containing the layout of your tiles (see [layers](#layers))
@@ -79,6 +62,25 @@ var settings = {
         - **imageCount**: The # of sprites in the sheet
         - **imageHeight**: The height of each sprite in pixels
         - **imageWidth**: The width of each sprite in pixels
+
+example:
+```js
+var settings = {
+    canvasID: "tile-map"
+    map: {
+        layers: layers
+        tileHeight: 50
+        tileWidth: 50
+        spriteSheet {
+            src: "path/to/spriteSheet.png"
+            imageCount: 5
+            imageHeight: 64
+            imageWidth: 64
+        }
+    }
+}
+```
+
 
 ### Sprite Sheet
 
@@ -208,6 +210,20 @@ __Optional Settings__
 - startX: The character's starting x position on the map (from the left) - defaults to 0
 - startY: The character's starting y position on the map (from the top) - defaults to 0
 - layer: The layer after which the character should be drawn - defaults to 1
+    (if `layer` is greater than or equal to the number of layers in the map, the character will be drawn on the top layer)
+
+example:
+```js
+character: {
+    src: "path/to/character.png"
+    height: 40,
+    width: 40,
+    speed: 150,
+    startX: 47,
+    startY: 96,
+    layer: 2
+}
+```
 
 ## Examples
 
