@@ -6,16 +6,16 @@ This package allows you to create a tile map game using an HTML Canvas element, 
 
 - [Install](#install)
 - [Usage](#usage)
-  - [Settings](#settings)
-    - [Required Settings](#required-settings)
-    - [Sprite Sheet](#sprite-sheet)
-    - [Layers](#layers)
-        - [Single Layer](#single-layer)
-        - [Multiple Layers](#multiple-layers)
-    - [Additional Settings](#additional-settings)
-        - [Camera](#camera)
-        - [Character](#character)
-  - [Examples](#settings)
+- [Settings](#settings)
+  - [Required Settings](#required-settings)
+  - [Sprite Sheet](#sprite-sheet)
+  - [Layers](#layers)
+      - [Single Layer](#single-layer)
+      - [Multiple Layers](#multiple-layers)
+- [Additional Settings](#additional-settings)
+    - [Camera](#camera)
+    - [Character](#character)
+- [Examples](#settings)
 - [License](#license)
 
 ## Install
@@ -46,24 +46,24 @@ var game = new Game(setting);
 game.run();
 ```
 
-### Settings
+## Settings
 
-The settings object you declare hold all of the information of your game. There are many optional settings to fully customize your game, but only a few are required.
+The settings object you create holds all of the information of your game. There are many optional settings to fully customize your game, but only a few are required.
 
-#### Required Settings
+### Required Settings
 
-- canvasID: The ID you assigned to your canvas element
-- map: An object containing features of your map
-    - layers: A list of matrices containing the layout of your tiles (see [layers](#layers))
-    - tileHeight: The height of each tile in pixels
-    - tileWidth: The width of each tile in pixels
-    - spriteSheet: An object containing information about your spritesheet (see [Sprite Sheet](#sprite-sheet))
-        - src: The location of the file
-        - imageCount: The # of sprites in the sheet
-        - imageHeight: The height of each sprite in pixels
-        - imageWidth: The width of each sprite in pixels
+- **canvasID**: The ID you assigned to your canvas element
+- **map**: An object containing features of your map
+    - **layers**: A list of matrices containing the layout of your tiles (see [layers](#layers))
+    - **tileHeight**: The height of each tile in pixels
+    - **tileWidth**: The width of each tile in pixels
+    - **spriteSheet**: An object containing information about your spritesheet (see [Sprite Sheet](#sprite-sheet))
+        - **src**: The location of the file
+        - **imageCount**: The # of sprites in the sheet
+        - **imageHeight**: The height of each sprite in pixels
+        - **imageWidth**: The width of each sprite in pixels
 
-#### Sprite Sheet
+### Sprite Sheet
 
 The sprite sheet is one file contains all of the images(sprites) you'd like to use as tiles. The sprites should all be the same size and should aligned horizontally.
 
@@ -80,15 +80,15 @@ spriteSheet: {
 }
 ```
 would be:
+
 ![sprite sheet example](./src/examples/static/images/tiles.png)
 
-#### Layers
+### Layers
 
 Layers respresent the entire layout of your map's tiles. Use the number references to your [sprite sheet](#sprite-sheet) to create a grid of your map.
 
-##### Single Layer
+#### Single Layer
 
-An example of a single layered map:
 ```js
 var layers = [
     [
@@ -111,11 +111,12 @@ var settings = {
 };
 ```
 would make:
+
 ![single layer screenshot]()
 
-**Notice that the 'layer' is nested inside the list of `layers`**
+**Note** The 'layer' is nested inside the list of `layers`
 
-##### Multiple Layers
+#### Multiple Layers
 
 To support multiple layers, simply add more layers to your `layers`
 
@@ -153,11 +154,12 @@ var settings = {
 };
 ```
 would make:
+
 ![multi-layered screenshot]()
 
-#### Additional Settings
+## Additional Settings
 
-##### Camera
+### Camera
 
 The camera is the viewport for the portion of the map that is currently being shown. If the camera's dimensions are smaller than the map, then the arrow keys on the keyboard will move the camera around the map.
 
@@ -175,7 +177,7 @@ camera: {
 }
 ```
 
-##### Character
+### Character
 
 A character can be placed inside the map and can move around with the arrow keys. The character is placed in the center of the screen (whenever possible).
 
@@ -190,7 +192,7 @@ __Optional Settings__
 - startY: The character's starting y position on the map (from the top) - defaults to 0
 - layer: The layer after which the character should be drawn - defaults to 1
 
-### Examples
+## Examples
 
 For full examples, check out the [demos](https://rbcasperson.github.io/canvas-tile-map/) and their [source code](./src/examples).
 
