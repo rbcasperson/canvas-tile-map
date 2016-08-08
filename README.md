@@ -131,7 +131,7 @@ var settings = {
 ```
 would make:
 
-![single layer screenshot]()
+![single layer screenshot](./src/examples/static/images/screenshots/single-layer-example.png)
 
 **Note** The 'layer' is nested inside the list of `layers`
 
@@ -174,7 +174,7 @@ var settings = {
 ```
 would make:
 
-![multi-layered screenshot]()
+![multi-layered screenshot](./src/examples/static/images/screenshots/multi-layered-example.png)
 
 ## Additional Settings
 
