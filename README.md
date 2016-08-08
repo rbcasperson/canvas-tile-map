@@ -94,7 +94,7 @@ Here is an example:
 
 ```js
 spriteSheet: {
-    src: './images/tiles.png',
+    src: './src/examples/static/images/tiles.png',
     imageCount: 5,
     imageHeight: 64,
     imageWidth: 64
@@ -104,9 +104,11 @@ would be:
 
 ![sprite sheet example](./src/examples/static/images/tiles.png)
 
+with number references of `[1, 2, 3, 4, 5]` which means `grass, dirt, tree-bottom, tree-top, bush`
+
 ### Layers
 
-Layers respresent the entire layout of your map's tiles. Use the number references to your [sprite sheet](#sprite-sheet) to create a grid of your map.
+Layers respresent the entire layout of your map's tiles. Use the number references to your sprite sheet to create a grid of your map.
 
 #### Single Layer
 
