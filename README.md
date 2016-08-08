@@ -28,13 +28,13 @@ npm install --save canvas-tile-map
 
 ## Usage
 
-Add a canvas element somewhere in your HTML page, and give it an ID:
+Add a canvas element somewhere in your HTML file, and give it an ID:
 
 ```html
 <canvas id="tile-map"></canvas>
 ```
 
-Then your JavaScript:
+Then in a JavaScript file:
 
 ```js
 var Game = require('canvas-tile-map').Game;
@@ -45,6 +45,8 @@ var settings = {
 var game = new Game(setting);
 game.run();
 ```
+
+Add your JavaScript file to your HTML using [Browserify](http://browserify.org/), [Webpack](https://webpack.github.io/), or anything, and you're all set!
 
 ## Settings
 
