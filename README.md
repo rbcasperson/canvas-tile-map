@@ -52,6 +52,23 @@ The settings object you create holds all of the information of your game. There 
 
 ### Required Settings
 
+```js
+var settings = {
+    canvasID: // the ID you assigned to your canvas element
+    map: { // an object containing features of your map
+        layers: // a list of matrices containing the layout of your tiles
+        tileHeight: // the height of each tile in pixels
+        tileWidth: // the width of each tile in pixels
+        spriteSheet { // an object containing information about your spritesheet
+            src: // the location of the image file
+            imageCount: // the # of sprites in the sheet
+            imageHeight: // the height of each sprite in pixels
+            imageWidth: // the width of each sprite in pixels
+        }
+    }
+}
+```
+
 - **canvasID**: The ID you assigned to your canvas element
 - **map**: An object containing features of your map
     - **layers**: A list of matrices containing the layout of your tiles (see [layers](#layers))
