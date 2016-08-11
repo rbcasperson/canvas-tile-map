@@ -9,6 +9,7 @@ export interface CharacterSettings {
     startX?: number;
     startY?: number;
     layer?: number;
+    collisionPoints?: number[][];
 }
 
 export class Character {
@@ -24,6 +25,7 @@ export class Character {
     image: HTMLImageElement;
     is: any;
     centerPosition: any;
+    collisionPoints: number[][];
     // the size of the character on the screen, not the size of the image
     width: number;
     height: number;
@@ -43,8 +45,22 @@ export class Character {
             y: (camera.height / 2) - (this.height / 2)
         }
 
+        if (settings.collisionPoints) {
+            this.collisionPoints = settings.collisionPoints;
+        } else {
+            this.collisionPoints = this.defaultCollisionPoints;
+        }
+
         this.isLoaded = false;
         this.load(settings.src);
+    }
+
+    get defaultCollisionPoints(): number[][] {
+        // configure default points
+        // should be each corner of the character, and if the size is bigger than
+        // a map tile then points in between to prevent corners being on a clear
+        // tile, but the center being on an impassable
+        return
     }
 
     move(deltaTime, deltaX, deltaY): void {

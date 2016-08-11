@@ -2,11 +2,19 @@ declare var require: any;
 let _ = require('lodash');
 import { Camera } from './camera';
 
+interface spriteSheet {
+    src: string;
+    imageCount: number;
+    imageHeight: number;
+    imageWidth: number;
+};
+
 export interface MapSettings {
     layers: number[][][];
     tileHeight: number;
     tileWidth: number;
-    spriteSheet: any;
+    spriteSheet: spriteSheet;
+    impassables?: number[];
 }
 
 export class Map {
@@ -20,6 +28,7 @@ export class Map {
     spriteSheetSettings: any;
     tileWidth: number;
     tileHeight: number;
+    impassables: number[];
 
     isLoaded: Boolean;
 
@@ -34,8 +43,18 @@ export class Map {
         this.spriteSheet = {
             settings: settings.spriteSheet
         };
+        this.impassables = settings.impassables;
         this.isLoaded = false;
         this.load();
+    }
+
+    tileAt(layer, x, y): number {
+        let col = _.ceil(x / this.tileWidth) - 1;
+        let row = _.ceil(y / this.tileHeight) - 1;
+        // make sure col & row aren't negative
+        col = _.max([0, col]);
+        row = _.max([0, row]);
+        return this.layers[layer][row][col];
     }
 
     load(): void {

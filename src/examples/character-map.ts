@@ -38,7 +38,8 @@ var settings = {
             imageCount: 5,
             imageWidth: 64,
             imageHeight: 64
-        }
+        },
+        impassables: [3, 5]
     },
     camera: {
         height: 300,
@@ -50,7 +51,13 @@ var settings = {
         height: 40,
         width: 40,
         speed: 100,
-        layer: 2
+        layer: 1,
+        collisionPoints: [
+            [0, 0],
+            [0, 40],
+            [40, 0],
+            [40, 40]
+        ]
     }
 }
 
