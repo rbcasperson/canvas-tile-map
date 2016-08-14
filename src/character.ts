@@ -9,6 +9,7 @@ export interface CharacterSettings {
     startX?: number;
     startY?: number;
     layer?: number;
+    collisionPoints?: number[][];
 }
 
 export class Character {
@@ -24,6 +25,7 @@ export class Character {
     image: HTMLImageElement;
     is: any;
     centerPosition: any;
+    collisionPoints: number[][];
     // the size of the character on the screen, not the size of the image
     width: number;
     height: number;
@@ -43,8 +45,43 @@ export class Character {
             y: (camera.height / 2) - (this.height / 2)
         }
 
+        if (settings.collisionPoints) {
+            this.collisionPoints = settings.collisionPoints;
+        } else {
+            this.setDefaultCollisionPoints(map);
+        }
+
         this.isLoaded = false;
         this.load(settings.src);
+    }
+
+    setDefaultCollisionPoints(map): void {
+        // configure default points
+        // should be each corner of the character, and if the size is bigger than
+        // a map tile then points in between to prevent corners being on a clear
+        // tile, but the center being on an impassable
+        let points = [
+            [0, 0],
+            [0, this.height],
+            [this.width, 0],
+            [this.width, this.height]
+        ];
+
+        let horizontalSpaceBetweenPoints = this.width;
+        while (horizontalSpaceBetweenPoints > map.tileWidth) {
+            horizontalSpaceBetweenPoints /= 2;
+            points.push(
+                [horizontalSpaceBetweenPoints, 0],
+                [horizontalSpaceBetweenPoints, this.height]);
+        };
+        let verticalSpaceBetweenPoints = this.height;
+        while (verticalSpaceBetweenPoints > map.tileWidth) {
+            verticalSpaceBetweenPoints /= 2;
+            points.push(
+                [0, verticalSpaceBetweenPoints],
+                [this.width, verticalSpaceBetweenPoints]);
+        };
+        this.collisionPoints = points;
     }
 
     move(deltaTime, deltaX, deltaY): void {

@@ -135,14 +135,23 @@ export class Game {
     move(deltaTime, deltaX, deltaY) {
         if (this.character) {
             this.character.move(deltaTime, deltaX, deltaY);
+
+            // if the character is on an impassable tile, undo the move
+            if (this.hasCollision()) {
+                this.character.move(deltaTime, -deltaX, -deltaY);
+                deltaX = 0;
+                deltaY = 0;
+            };
+
+
             this.character.is = this.characterScreenPosition;
             // figure out if the camera needs to move
             if (!this.character.is.centered.horizontally) {
                 deltaX = 0;
-            }
+            };
             if (!this.character.is.centered.vertically) {
                 deltaY = 0;
-            }
+            };
             this.camera.move(deltaTime, deltaX, deltaY);
         } else {
             this.camera.move(deltaTime, deltaX, deltaY);
@@ -150,6 +159,23 @@ export class Game {
 
         this.clearView;
         this.drawView();
+    }
+
+    hasCollision() {
+        let collision = false;
+        _.each(this.character.collisionPoints, point => {
+            let [x, y] = point;
+            // find that collision point's currunt location on the canvas
+            x += this.character.x;
+            y += this.character.y;
+            // check if it has a collision
+            _.each(_.range(this.map.layers.length), layer => {
+                if (_.includes(this.map.impassables, this.map.tileAt(layer, x, y))) {
+                    collision = true;
+                };
+            });
+        });
+        return collision
     }
 
     drawCharacter() {
