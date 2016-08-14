@@ -48,19 +48,40 @@ export class Character {
         if (settings.collisionPoints) {
             this.collisionPoints = settings.collisionPoints;
         } else {
-            this.collisionPoints = this.defaultCollisionPoints;
+            this.setDefaultCollisionPoints(map);
         }
 
         this.isLoaded = false;
         this.load(settings.src);
     }
 
-    get defaultCollisionPoints(): number[][] {
+    setDefaultCollisionPoints(map): void {
         // configure default points
         // should be each corner of the character, and if the size is bigger than
         // a map tile then points in between to prevent corners being on a clear
         // tile, but the center being on an impassable
-        return
+        let points = [
+            [0, 0],
+            [0, this.height],
+            [this.width, 0],
+            [this.width, this.height]
+        ];
+
+        let horizontalSpaceBetweenPoints = this.width;
+        while (horizontalSpaceBetweenPoints > map.tileWidth) {
+            horizontalSpaceBetweenPoints /= 2;
+            points.push(
+                [horizontalSpaceBetweenPoints, 0],
+                [horizontalSpaceBetweenPoints, this.height]);
+        };
+        let verticalSpaceBetweenPoints = this.height;
+        while (verticalSpaceBetweenPoints > map.tileWidth) {
+            verticalSpaceBetweenPoints /= 2;
+            points.push(
+                [0, verticalSpaceBetweenPoints],
+                [this.width, verticalSpaceBetweenPoints]);
+        };
+        this.collisionPoints = points;
     }
 
     move(deltaTime, deltaX, deltaY): void {
