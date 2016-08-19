@@ -51,7 +51,9 @@ var settings = {
         height: 40,
         width: 40,
         speed: 100,
-        layer: 1
+        layer: 1,
+        startX: 102,
+        startY: 460
     }
 }
 

@@ -48,6 +48,11 @@ export class Game {
         // set up the character
         if (settings.character) {
             this.character = new Character(this.map, this.camera, settings.character);
+            // reset the camera position in case the character has a different
+            // startX and/or startY
+            this.camera.x = Math.max(0, Math.min(this.character.x - this.character.centerPosition.x, this.camera.maxX));
+    	    this.camera.y = Math.max(0, Math.min(this.character.y - this.character.centerPosition.y, this.camera.maxY));
+
             this.character.is = this.characterScreenPosition;
         }
 
@@ -199,8 +204,8 @@ export class Game {
 
         this.context.drawImage(
             this.character.image,
-            screenX,
-            screenY,
+            _.round(screenX),
+            _.round(screenY),
             this.character.width,
             this.character.height
         );
@@ -233,6 +238,8 @@ export class Game {
     }
 
     drawView(): void {
+        console.log(`character ${this.character.x} ${this.character.y}`);
+        console.log(`camera ${this.camera.x} ${this.camera.y}`);
         let offsetX = _.round(-this.camera.x + (this.tilesInView.startCol * this.map.tileWidth));
         let offsetY = _.round(-this.camera.y + (this.tilesInView.startRow * this.map.tileHeight));
         _.each(_.range(this.map.layers.length), layer => {
