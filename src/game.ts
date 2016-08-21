@@ -1,5 +1,6 @@
 declare var require: any;
 let _ = require('lodash');
+import * as draw from './draw';
 import { Camera, CameraSettings } from './camera';
 import { Map, MapSettings } from './map';
 import { Keyboard, KeyboardSettings } from './keyboard';
@@ -184,62 +185,14 @@ export class Game {
     }
 
     drawCharacter() {
-        // assume the character should be centered
-        let screenX: number = this.character.centerPosition.x;
-        let screenY: number = this.character.centerPosition.y;
-        if (this.character.is.leftOfCenter) {
-            screenX = this.character.x;
-        };
-        if (this.character.is.rightOfCenter) {
-            // character's max screenX - character's distance from the map's right edge
-            screenX = (this.camera.width - this.character.width) - (this.character.maxX - this.character.x);
-        }
-        if (this.character.is.upOfCenter) {
-            screenY = this.character.y;
-        }
-        if (this.character.is.downOfCenter) {
-            // character's max screenY - character's distance from the map's bottom edge
-            screenY = (this.camera.height - this.character.height) - (this.character.maxY - this.character.y);
-        }
-
-        this.context.drawImage(
-            this.character.image,
-            _.round(screenX),
-            _.round(screenY),
-            this.character.width,
-            this.character.height
-        );
+        draw.character(this.character, this.camera, this.context);
     }
 
     drawLayer(layer, offsetX, offsetY): void {
-        let context = this.context;
-        let tiles = this.tilesInView;
-        _.each(_.range(tiles.startRow, tiles.endRow + 1), row => {
-            _.each(_.range(tiles.startCol, tiles.endCol + 1), col => {
-                let tile = this.map.layers[layer][row][col];
-                if (tile !== 0) {
-                    let source = this.map.spriteSheet[tile];
-                    let destX = ((col - tiles.startCol) * this.map.tileWidth) + offsetX;
-                    let destY = ((row - tiles.startRow) * this.map.tileHeight) + offsetY;
-                    context.drawImage(
-                        this.map.spriteSheet.image,
-                        source.x,
-                        source.y,
-                        source.width,
-                        source.height,
-                        _.round(destX),
-                        _.round(destY),
-                        this.map.tileWidth,
-                        this.map.tileHeight
-                    )
-                }
-            })
-        })
+        draw.layer(this.context, this.tilesInView, this.map, layer, offsetX, offsetY);
     }
 
     drawView(): void {
-        console.log(`character ${this.character.x} ${this.character.y}`);
-        console.log(`camera ${this.camera.x} ${this.camera.y}`);
         let offsetX = _.round(-this.camera.x + (this.tilesInView.startCol * this.map.tileWidth));
         let offsetY = _.round(-this.camera.y + (this.tilesInView.startRow * this.map.tileHeight));
         _.each(_.range(this.map.layers.length), layer => {
