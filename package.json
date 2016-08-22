@@ -1,0 +1,42 @@
+{
+  "name": "canvas-tile-map",
+  "version": "0.0.2",
+  "description": "Using HTML's canvas element to create and maneuver 2D game maps",
+  "main": "built/game.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rbcasperson/canvas-tile-map.git"
+  },
+  "keywords": [
+    "canvas",
+    "tile",
+    "map",
+    "2D",
+    "game"
+  ],
+  "author": "Ryan Casperson <casperson.ryan@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rbcasperson/canvas-tile-map/issues"
+  },
+  "homepage": "https://github.com/rbcasperson/canvas-tile-map#readme",
+  "dependencies": {
+    "lodash": "^4.13.1",
+    "typescript": "^1.8.10"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.13.0",
+    "browserify": "^13.0.1",
+    "typings": "^1.3.2"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "postinstall": "typings install && mkdir bundled",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "all": "tsc && browserify built/examples/basic-map.js -o bundled/basic-map.js && browserify built/examples/layered-map.js -o bundled/layered-map.js && tsc && browserify built/examples/large-map.js -o bundled/large-map.js && browserify built/examples/character-map.js -o bundled/character-map.js",
+    "basic": "tsc && browserify built/examples/basic-map.js -o bundled/basic-map.js",
+    "layered": "tsc && browserify built/examples/layered-map.js -o bundled/layered-map.js",
+    "large": "tsc && browserify built/examples/large-map.js -o bundled/large-map.js",
+    "character": "tsc && browserify built/examples/character-map.js -o bundled/character-map.js"
+  }
+}

@@ -2,13 +2,19 @@ declare var require: any;
 let _ = require('lodash');
 import { Camera } from './camera';
 
-let Promise: any;
+interface spriteSheetSettings {
+    src: string;
+    imageCount: number;
+    imageHeight: number;
+    imageWidth: number;
+};
 
 export interface MapSettings {
     layers: number[][][];
     tileHeight: number;
     tileWidth: number;
-    spriteSheet: any;
+    spriteSheet: spriteSheetSettings;
+    impassables?: number[];
 }
 
 export class Map {
@@ -18,10 +24,19 @@ export class Map {
     rowCount: number; // # of rows in each layer
     height: number; // in pixels
     width: number; // in pixels
-    spriteSheet: any;
-    spriteSheetSettings: any;
+    spriteSheet: {
+        settings: spriteSheetSettings;
+        image: any;
+        [tileID: number]: {
+            x: number;
+            y: number;
+            width: number;
+            height: number;
+        }
+    };
     tileWidth: number;
     tileHeight: number;
+    impassables: number[];
 
     isLoaded: Boolean;
 
@@ -34,10 +49,21 @@ export class Map {
         this.height = this.colCount * this.tileHeight;
         this.width = this.rowCount * this.tileWidth;
         this.spriteSheet = {
-            settings: settings.spriteSheet
+            settings: settings.spriteSheet,
+            image: undefined
         };
+        this.impassables = settings.impassables;
         this.isLoaded = false;
         this.load();
+    }
+
+    tileAt(layer: number, x: number, y: number): number {
+        let col = _.ceil(x / this.tileWidth) - 1;
+        let row = _.ceil(y / this.tileHeight) - 1;
+        // make sure col & row aren't negative
+        col = _.max([0, col]);
+        row = _.max([0, row]);
+        return this.layers[layer][row][col];
     }
 
     load(): void {
@@ -47,15 +73,14 @@ export class Map {
         };
         img.src = this.spriteSheet.settings.src;
         this.spriteSheet.image = img;
-
-        _.each(_.range(1, this.spriteSheet.settings.imageCount + 1), key => {
+        // assign the information for each key
+        _.each(_.range(1, this.spriteSheet.settings.imageCount + 1), (key: number) => {
             this.spriteSheet[key] = {
                 x: (key - 1) * this.spriteSheet.settings.imageWidth,
                 y: 0,
                 width: this.spriteSheet.settings.imageWidth,
                 height: this.spriteSheet.settings.imageHeight
             };
-
         })
     }
 }
