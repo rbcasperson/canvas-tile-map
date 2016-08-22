@@ -1,3 +1,6 @@
 built/
 node_modules/
 typings/
+package.json
+server.js
+tsconfig.json
