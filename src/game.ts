@@ -4,7 +4,7 @@ import * as draw from './draw';
 import * as setup from './setup';
 import { Camera, CameraSettings } from './camera';
 import { Map, MapSettings } from './map';
-import { Keyboard, KeyboardSettings } from './keyboard';
+import { Keyboard, KeyboardSettings, Key } from './keyboard';
 import { Character, CharacterSettings } from './character';
 
 interface GameSettings {
@@ -14,6 +14,24 @@ interface GameSettings {
     keyboard?: KeyboardSettings;
     character?: CharacterSettings;
 }
+
+export interface TilesInView {
+    startCol: number; 
+    endCol: number;
+    startRow: number; 
+    endRow: number;
+};
+
+export interface CharacterScreenPosition {
+    centered: {
+        horizontally: boolean;
+        vertically: boolean;
+    };
+    leftOfCenter: boolean;
+    rightOfCenter: boolean;
+    upOfCenter: boolean;
+    downOfCenter: boolean;
+};
 
 export class Game {
     map: Map;
@@ -49,11 +67,11 @@ export class Game {
         this.timeSinceLastUpdate = 0;
     }
 
-    get tilesInView() {
-        var startCol = _.floor(this.camera.x / this.map.tileWidth);
-        var endCol = startCol + (this.camera.width / this.map.tileWidth);
-        var startRow = _.floor(this.camera.y / this.map.tileHeight);
-        var endRow = startRow + (this.camera.height / this.map.tileHeight);
+    get tilesInView(): TilesInView {
+        var startCol: number = _.floor(this.camera.x / this.map.tileWidth);
+        var endCol: number = startCol + (this.camera.width / this.map.tileWidth);
+        var startRow: number = _.floor(this.camera.y / this.map.tileHeight);
+        var endRow: number = startRow + (this.camera.height / this.map.tileHeight);
         return {
             startCol: startCol, 
             endCol: _.min([endCol, this.map.colCount - 1]), 
@@ -62,7 +80,7 @@ export class Game {
         };
     }
 
-    get characterScreenPosition() {
+    get characterScreenPosition(): CharacterScreenPosition {
         let isLeft = false;
         let isRight = false;
         let isUp = false;
@@ -103,7 +121,7 @@ export class Game {
         
     }
 
-    update(totalTime): void {
+    update(totalTime: number): void {
         window.requestAnimationFrame(this.update.bind(this));
 
         // compute deltaTime time in seconds
@@ -111,18 +129,18 @@ export class Game {
         deltaTime = _.min([deltaTime, .25]);
         this.timeSinceLastUpdate = totalTime;
 
-        _.each(this.keyboard.keys, key => {
+        _.each(this.keyboard.keys, (key: Key) => {
             if (key.isDown) {
                 let [action, ...params] = key.action.split(' ');
                 if (action == 'move') {
-                    let [deltaX, deltaY] = _.map(params, _.toInteger);
+                    let [deltaX, deltaY]: number[] = _.map(params, _.toInteger);
                     this.move(deltaTime, deltaX, deltaY);
                 }
             }
         })
     }
 
-    move(deltaTime, deltaX, deltaY) {
+    move(deltaTime: number, deltaX: number, deltaY: number): void {
         if (this.character) {
             this.character.move(deltaTime, deltaX, deltaY);
 
@@ -151,15 +169,15 @@ export class Game {
         this.drawView();
     }
 
-    hasCollision() {
+    hasCollision(): boolean {
         let collision = false;
-        _.each(this.character.collisionPoints, point => {
+        _.each(this.character.collisionPoints, (point: number[]) => {
             let [x, y] = point;
             // find that collision point's currunt location on the canvas
             x += this.character.x;
             y += this.character.y;
             // check if it has a collision
-            _.each(_.range(this.map.layers.length), layer => {
+            _.each(_.range(this.map.layers.length), (layer: number) => {
                 if (_.includes(this.map.impassables, this.map.tileAt(layer, x, y))) {
                     collision = true;
                 };
@@ -168,18 +186,18 @@ export class Game {
         return collision
     }
 
-    drawCharacter() {
+    drawCharacter(): void {
         draw.character(this.character, this.camera, this.context);
     }
 
-    drawLayer(layer, offsetX, offsetY): void {
+    drawLayer(layer: number, offsetX: number, offsetY: number): void {
         draw.layer(this.context, this.tilesInView, this.map, layer, offsetX, offsetY);
     }
 
     drawView(): void {
-        let offsetX = _.round(-this.camera.x + (this.tilesInView.startCol * this.map.tileWidth));
-        let offsetY = _.round(-this.camera.y + (this.tilesInView.startRow * this.map.tileHeight));
-        _.each(_.range(this.map.layers.length), layer => {
+        let offsetX: number = _.round(-this.camera.x + (this.tilesInView.startCol * this.map.tileWidth));
+        let offsetY: number = _.round(-this.camera.y + (this.tilesInView.startRow * this.map.tileHeight));
+        _.each(_.range(this.map.layers.length), (layer: number) => {
             // if it is the correct layer, draw the character
             if(this.character && layer === this.character.layer) {
                 this.drawCharacter();

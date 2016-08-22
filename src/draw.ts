@@ -1,7 +1,12 @@
 declare var require: any;
 let _ = require('lodash');
 
-export function character(character, camera, context) {
+import { Map } from './map';
+import { Character } from './character';
+import { Camera } from './camera';
+import { TilesInView } from './game';
+
+export function character(character: Character, camera: Camera, context: any): void {
     // assume the character should be centered
     let screenX: number = character.centerPosition.x;
     let screenY: number = character.centerPosition.y;
@@ -29,9 +34,9 @@ export function character(character, camera, context) {
     );
 }
 
-export function layer(context, tiles, map, layer, offsetX, offsetY) {
-    _.each(_.range(tiles.startRow, tiles.endRow + 1), row => {
-        _.each(_.range(tiles.startCol, tiles.endCol + 1), col => {
+export function layer(context: any, tiles: TilesInView, map: Map, layer: number, offsetX: number, offsetY: number): void {
+    _.each(_.range(tiles.startRow, tiles.endRow + 1), (row: number) => {
+        _.each(_.range(tiles.startCol, tiles.endCol + 1), (col: number) => {
             let tile = map.layers[layer][row][col];
             if (tile !== 0) {
                 let source = map.spriteSheet[tile];
