@@ -1,6 +1,7 @@
 declare var require: any;
 let _ = require('lodash');
 import * as draw from './draw';
+import * as setup from './setup';
 import { Camera, CameraSettings } from './camera';
 import { Map, MapSettings } from './map';
 import { Keyboard, KeyboardSettings } from './keyboard';
@@ -26,25 +27,8 @@ export class Game {
     constructor(settings: GameSettings) {
         this.map = new Map(settings.map);
 
-        // set up the camera
-        if (settings.camera) {
-            this.camera = new Camera(this.map, settings.camera);
-        } else {
-            // creates a camera the same size as the map
-            let defaultCameraSettings = {
-                height: this.map.height,
-                width: this.map.width,
-                speed: 0 // camera will not move
-            };
-            this.camera = new Camera(this.map, defaultCameraSettings);
-        };
-
-        // set up the keyboard
-        if (settings.keyboard) {
-            this.keyboard = new Keyboard(settings.keyboard);
-        } else {
-            this.keyboard = new Keyboard();
-        }
+        this.camera = setup.camera(this.map, settings.camera);
+        this.keyboard = setup.keyboard(settings.keyboard);
 
         // set up the character
         if (settings.character) {
