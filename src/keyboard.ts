@@ -1,14 +1,19 @@
 declare var require: any;
 let _ = require('lodash');
 
-interface Key {
+export interface Key {
 	code: number;
 	action: string;
-}
+	isDown: boolean;
+};
+
+interface Codes {
+	[code: number]: string
+};
 
 export interface KeyboardSettings {
 	keys: any
-}
+};
 
 let defaultKeyboardSettings = {
 	keys: {
@@ -32,22 +37,24 @@ let defaultKeyboardSettings = {
 };
 
 export class Keyboard {
-	keys: any
+	keys: any;
+	codes: Codes;
 
 	constructor(settings: KeyboardSettings = defaultKeyboardSettings) {
 		this.keys = settings.keys;
+		this.setCodes();
 		this.listenForEvents();
 	}
 
-	get codes() {
-		let codes = {};
+	setCodes(): void {
+		let codes: Codes = {};
 		_.each(this.keys, (metadata, name) => {
 			codes[this.keys[name].code] = name;
 		});
-		return codes
+		this.codes = codes;
 	}
 
-	listenForEvents() {
+	listenForEvents(): void {
 		window.addEventListener('keydown', this._onKeyDown.bind(this));
 	    window.addEventListener('keyup', this._onKeyUp.bind(this));
 	    _.each(this.keys, (metadata, name) => {
@@ -55,9 +62,8 @@ export class Keyboard {
 	    })
 	}
 
-	_onKeyDown(event) {
+	_onKeyDown(event: KeyboardEvent): void {
 		let keyCode = event.keyCode;
-		let codes = this.codes;
 		if (this.codes[keyCode]) {
 			event.preventDefault();
 			this.keys[this.codes[keyCode]].isDown = true;
@@ -65,7 +71,7 @@ export class Keyboard {
 
 	}
 
-	_onKeyUp(event) {
+	_onKeyUp(event: KeyboardEvent): void {
 		let keyCode = event.keyCode;
 		if (this.codes[keyCode]) {
 			event.preventDefault();

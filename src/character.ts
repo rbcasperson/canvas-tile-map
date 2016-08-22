@@ -1,6 +1,10 @@
 declare var require: any;
 let _ = require('lodash');
 
+import { Map } from './map';
+import { Camera } from './camera';
+import { CharacterScreenPosition } from './game';
+
 export interface CharacterSettings {
     src: string;
     width: number;
@@ -23,14 +27,17 @@ export class Character {
     layer: number;
     isLoaded: Boolean;
     image: HTMLImageElement;
-    is: any;
-    centerPosition: any;
+    is: CharacterScreenPosition;
+    centerPosition: {
+        x: number,
+        y: number
+    };
     collisionPoints: number[][];
     // the size of the character on the screen, not the size of the image
     width: number;
     height: number;
 
-    constructor(map, camera, settings: CharacterSettings) {
+    constructor(map: Map, camera: Camera, settings: CharacterSettings) {
         this.x = settings.startX || 0;
         this.y = settings.startY || 0;
         this.width = settings.width;
@@ -55,7 +62,7 @@ export class Character {
         this.load(settings.src);
     }
 
-    setDefaultCollisionPoints(map): void {
+    setDefaultCollisionPoints(map: Map): void {
         // configure default points
         // should be each corner of the character, and if the size is bigger than
         // a map tile then points in between to prevent corners being on a clear
@@ -84,7 +91,7 @@ export class Character {
         this.collisionPoints = points;
     }
 
-    move(deltaTime, deltaX, deltaY): void {
+    move(deltaTime: number, deltaX: number, deltaY: number): void {
         this.x += deltaX * this.speed * deltaTime;
 		this.y += deltaY * this.speed * deltaTime;
         // prevent moving beyond the map
@@ -100,7 +107,7 @@ export class Character {
         };
     }
 
-    load(src): void {
+    load(src: string): void {
         let img = new Image();
         img.onload = () => {
             this.isLoaded = true;
