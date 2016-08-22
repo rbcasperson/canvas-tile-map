@@ -15,6 +15,7 @@ This package allows you to create a tile map game using an HTML Canvas element, 
 - [Additional Settings](#additional-settings)
     - [Camera](#camera)
     - [Character](#character)
+        - [Collision Points](#collision-points)
 - [Examples](#settings)
 - [License](#license)
 
@@ -214,7 +215,7 @@ __Optional Settings__
 - startX: The character's starting x position on the map (from the left) - defaults to 0
 - startY: The character's starting y position on the map (from the top) - defaults to 0
 - layer: The layer after which the character should be drawn - defaults to 1
-    (if `layer` is greater than or equal to the number of layers in the map, the character will be drawn on the top layer)
+- collisionPoints: A list of `[x, y]` coordinates, each of which will be tested for collisions. Defaults to the perimeter of the image. See [Collision Points](#collision-points).
 
 example:
 ```js
@@ -228,6 +229,12 @@ character: {
     layer: 2
 }
 ```
+
+#### Collision Points
+
+The collision points allow you to customize what parts of the character can collide with impassable tiles. This is a very useful tool, but requires you to know the exact pixels (from the top left corner of the image) and manually create a list.
+
+IMPORTANT: The coordinates you provide are based on the size of the image when it is drawn to the screen. i.e. `character.height` & `character.width`. It is recommended to resize the image to what you want on screen, and then determine the collision points using the resized image.
 
 ## Examples
 
