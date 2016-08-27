@@ -1,6 +1,6 @@
 {
   "name": "canvas-tile-map",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Using HTML's canvas element to create and maneuver 2D game maps",
   "main": "built/game.js",
   "repository": {
